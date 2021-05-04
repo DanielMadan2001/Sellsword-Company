@@ -21,3 +21,20 @@ Disaster | sustain injury
 
 
 
+## Busking
+### Perform for the locals on the street.
+##### Type: Free Job 
+##### Difficulty: ★
+##### Length: 1 week
+### Relevant stats:
+* Level
+* Allure
+### Relevant skills:
+* Passion for Art: increases chance of success
+* Flair: increases chance to excel
+
+Results | Rewards
+------------ | -------------
+Perfect | lots of money, get level and allure point
+Pass | some money, get level
+Fail | get level
