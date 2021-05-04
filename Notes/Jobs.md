@@ -1,22 +1,16 @@
-### Terminology
-* Normal job
-* Free job
-* Training
-
-## Name
-##### Description: obladioblada
-###### Type: 
+## Labour
+#### Complete manual labor for a small amount of money. Low risk, low reward.
+###### Type: Normal Job 
 ###### Difficulty: ★
-##### Relevant skills:
+###### Length: 1 week * (minimum workers // 3)
+#### Relevant skills:
 * Level
-
-##### Length: 1 week
+* Strength
 
 Results | Rewards
 ------------ | -------------
-Perfect | x
-Great | x
-Pass | x
-Fail | x
-Disaster | x
+Perfect | 1.5x money, get level and strength point
+Pass | get money and level
+Fail | get level
+Disaster | sustain injury
 
