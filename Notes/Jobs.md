@@ -10,10 +10,13 @@ Difficulty: ★
 ##### Relevant skills:
 * Level
 
-##### Length:
-1 week
+##### Length: 1 week
 
-Results | Second Header
+Results | Rewards
 ------------ | -------------
-Content from cell 1 | Content from cell 2
-Content in the first column | Content in the second column
+Perfect | x
+Great | x
+Pass | x
+Fail | x
+Disaster | x
+
