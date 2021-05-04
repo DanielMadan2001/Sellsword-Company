@@ -3,9 +3,11 @@
 ###### Type: Normal Job 
 ###### Difficulty: ★
 ###### Length: 1 week * (minimum workers // 3)
-#### Relevant skills:
+#### Relevant stats:
 * Level
 * Strength
+#### Relevant skills:
+* Heavy Lifting: increases chance of success and lowers chance of injury
 
 Results | Rewards
 ------------ | -------------
