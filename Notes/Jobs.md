@@ -5,8 +5,8 @@
 
 ## Name
 ##### Description: obladioblada
-Type
-Difficulty: ★
+###### Type: 
+###### Difficulty: ★
 ##### Relevant skills:
 * Level
 
