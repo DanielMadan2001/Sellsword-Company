@@ -1,3 +1,7 @@
+#### Terminology
+* Normal job: A job listed on the job board. Can only be selected by one group of workers before it is unable to be selected by anyone else. Gets refreshed at the beginning of every week.
+* Free job: A job that can be done by any mercenary and never leaves the board.
+* Training: A job that the player pays for and results in the target unit growing in a particular category. Can only be selected by one group like a normal job but never goes away.
 # Labour
 #### Complete manual labor for a small amount of money. Low risk, low reward.
 ##### Type: Normal Job 
