@@ -667,11 +667,6 @@ class Job:
                 injury_chance -= 10
             if unit.skills["Glory Seeker"] == True:
                 injury_chance += 5
-        # print(unit.strength - self.recommended_strength)
-        # print(unit.intelligence - self.recommended_intelligence)
-        # print(unit.agility - self.recommended_agility)
-        # print(unit.cunning - self.recommended_cunning)
-        # print(unit.allure - self.recommended_allure)
         success_chance += 5 * (unit.strength - self.recommended_strength)
         success_chance += 5 * (unit.intelligence - self.recommended_intelligence)
         success_chance += 5 * (unit.agility - self.recommended_agility)
@@ -683,6 +678,14 @@ class Job:
         for i in self.excel_skills:
             if unit.skills[i] == True:
                 excel_chance += 30
+        while success_chance > 100:
+            success_chance -= 100
+            excel_chance += 15
+            if success_chance < 100:
+                success_chance = 100
+                break
+        if excel_chance > 100:
+            excel_chance = 100
         return success_chance, excel_chance, injury_chance
 
     def print_chance(self, unit):
