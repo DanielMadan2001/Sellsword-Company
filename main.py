@@ -43,15 +43,15 @@ def hiring_board():
 class Unit:
     def __init__(self, name="", level=0, birthday=[0, 0], age=0, job="", personality="", skills=[], commander=False):
         self.name = name
-        if name is "":
+        if len(name) == 0:
             self.give_name()
 
         self.level = level
-        if level is 0:
+        if level == 0:
             self.level = randint(1, 60)
 
         self.age = age
-        if age is 0:
+        if age == 0:
             self.age = randint(14, 49)
 
         self.birthday = birthday
@@ -60,7 +60,7 @@ class Unit:
 
         self.job = job
         jobs = ["Fighter", "Wizard", "Thief", "Knight", "Magician", "Archer", "Monk"]
-        if self.job is "" or self.job not in jobs:
+        if self.job == "" or self.job not in jobs:
             self.job = jobs[randint(0, len(jobs) - 1)]
 
         self.personality = personality
@@ -68,7 +68,7 @@ class Unit:
                          "Advocate", "Mediator", "Giver", "Champion",
                          "Inspector", "Protector", "Director", "Caregiver",
                          "Crafter", "Artist", "Persuader", "Performer"]
-        if self.personality is "" or self.personality not in personalities:
+        if self.personality == "" or self.personality not in personalities:
             self.personality = personalities[randint(0, len(personalities) - 1)]
 
         self.attitude = 5
@@ -240,7 +240,7 @@ class Unit:
             total *= 0.9
         elif self.age > 50:
             total -= 10 * (self.age - 50)
-        if self.condition is not "Fine":
+        if self.condition != "Fine":
             total *= 0.25
         return round(total, 3)
 
@@ -255,20 +255,20 @@ class Unit:
         if 30 <= self.level < 40:
             for i in range(3):
                 roll = randint(1, 3)
-                if roll is 3:
+                if roll == 3:
                     self.get_random_skill()
         # 40-49: 50% chance for a skill, 3 times
         elif 40 <= self.level < 50:
             for i in range(3):
                 roll = randint(1, 2)
-                if roll is 1:
+                if roll == 1:
                     self.get_random_skill()
         # 50-59: 1 skill, 50% chance for a skill, 2 times
         elif 50 <= self.level < 60:
             self.get_random_skill()
             for i in range(2):
                 roll = randint(1, 2)
-                if roll is 1:
+                if roll == 1:
                     self.get_random_skill()
         # 60-70: 3 random skills
         elif self.level >= 60:
@@ -313,7 +313,7 @@ class Unit:
             possible_jobs.append("Shinobi Training")
         while True:
             randNum = randint(0, len(possible_jobs) - 1)
-            if self.skills[possible_jobs[randNum]] is not True:
+            if self.skills[possible_jobs[randNum]] != True:
                 self.add_skill(possible_jobs[randNum])
                 break
 
@@ -377,9 +377,9 @@ class Unit:
             print(self.name)
         print("Lvl.", self.level, self.job, "\t", self.age, "years old\tWorth:",
               str(self.calculate_worth()) + "$\tMonthly wage:", str(self.calculate_wage()) + "$")
-        if self.condition is not "Fine":
+        if self.condition != "Fine":
             print(self.condition)
-        elif self.current_job is not None:
+        elif self.current_job != None:
             print("Currently working")
         print("-----------------------------------------------------------------------------------------------------")
 
@@ -395,7 +395,7 @@ class Unit:
         print("Job:\t\t\t", self.job)
         print("Personality:\t", self.personality)
         print("Attitude:\t\t", str(self.attitude) + "/10")
-        if self.current_job is not None:
+        if self.current_job != None:
             print("Current job:\t", self.current_job.type, "(weeks left:", str(self.current_job.length) + ")")
         else:
             print("Current job:\t Awaiting work")
@@ -413,10 +413,10 @@ class Unit:
             "-----------------------------------------------------------------------------------------------------")
         temp = 0
         for j in self.skills:
-            if self.skills[j] is True:
+            if self.skills[j] == True:
                 print(j)
                 temp += 1
-        if temp is 0:
+        if temp == 0:
             print("No skills...")
         print(
             "-----------------------------------------------------------------------------------------------------")
@@ -463,7 +463,7 @@ class Roster:
         count = 0
         for i in self.units:
             current = self.units[i]
-            if current.current_job is None and current.condition is "Fine":
+            if current.current_job == None and current.condition == "Fine":
                 count += 1
         return count
 
@@ -639,17 +639,17 @@ class Job:
         print("---------------------------------------------------------------------------------------------------")
         print("Rewards:")
         print(" Gold:", str(self.reward_gold) + "$")
-        if self.reward_strength is True:
+        if self.reward_strength == True:
             print(" Increase strength stat")
-        if self.reward_intelligence is True:
+        if self.reward_intelligence == True:
             print(" Increase intelligence stat")
-        if self.reward_agility is True:
+        if self.reward_agility == True:
             print(" Increase agility stat")
-        if self.recommended_cunning is True:
+        if self.recommended_cunning == True:
             print(" Increase cunning stat")
-        if self.reward_allure is True:
+        if self.reward_allure == True:
             print(" Increase allure stat")
-        if self.reward_extra_money is True:
+        if self.reward_extra_money == True:
             print(" Extra money if done exceptionally")
         print("===================================================================================================\n")
 
@@ -657,15 +657,15 @@ class Job:
         success_chance = 75
         excel_chance = 15
         injury_chance = 0
-        if self.type == "Labour" and unit.skills["Heavy Lifting"] is False:
+        if self.type == "Labour" and unit.skills["Heavy Lifting"] == False:
             injury_chance = 15
         elif self.type == "Battle" or self.type == "Battle Tactician" or self.type == "War":
             injury_chance = 20
-            if unit.skills["Soldier Training"] is True:
+            if unit.skills["Soldier Training"] == True:
                 injury_chance -= 10
-            if unit.skills["Advanced Training"] is True:
+            if unit.skills["Advanced Training"] == True:
                 injury_chance -= 10
-            if unit.skills["Glory Seeker"] is True:
+            if unit.skills["Glory Seeker"] == True:
                 injury_chance += 5
         # print(unit.strength - self.recommended_strength)
         # print(unit.intelligence - self.recommended_intelligence)
@@ -678,10 +678,10 @@ class Job:
         success_chance += 5 * (unit.cunning - self.recommended_cunning)
         success_chance += 5 * (unit.allure - self.recommended_allure)
         for i in self.success_skills:
-            if unit.skills[i] is True:
+            if unit.skills[i] == True:
                 success_chance += 30
         for i in self.excel_skills:
-            if unit.skills[i] is True:
+            if unit.skills[i] == True:
                 excel_chance += 30
         return success_chance, excel_chance, injury_chance
 
@@ -705,9 +705,9 @@ class Job:
             else:
                 excel_chance += 1
             injury_chance += result[2]
-            if self.type == "Labour" and i.skills["Heavy Lifting"] is True:
+            if self.type == "Labour" and i.skills["Heavy Lifting"] == True:
                 injury_free = True
-        if injury_free is True:
+        if injury_free == True:
             injury_chance = 0
         return success_chance // len(units), excel_chance, injury_chance // len(units)
 
@@ -794,7 +794,7 @@ def date_update():
             System.max_level = System.roster.units[i].level
 
 
-def date_checker():
+def weekly_update():
     # weekly job checker
     for i in System.jobs_in_progress:
         i.length -= 1
@@ -855,7 +855,7 @@ def job_rewards(job):
             result = 0
             print(unit_names, "succeeded!")
     else:
-        if randint(1, 3) is 3:
+        if randint(1, 3) == 3:
             result = -2
             print(unit_names, "messed up.")
         else:
@@ -893,23 +893,23 @@ def unit_rewards(job, unit, result):
 def activity_board():
     # if len(System.weekly_jobs) > 0:
     #     job_start(0, [System.roster.units[0]])
-    while System.roster.units[0].current_job is None:
+    while System.roster.units[0].current_job == None:
         menu_top()
         choice = int(input(
             "What do you want to do?\n 1: Job board\n 2: Hire\n 3: Roster\n 4: News\n 5: Current jobs being done\n 6: Wait\n"))
-        if choice is 1:  # Jobs
+        if choice == 1:  # Jobs
             option_1()
-        elif choice is 2:  # Hire
+        elif choice == 2:  # Hire
             new = hiring_board()
-            if new is not None:
+            if new != None:
                 System.roster.add_unit(new)
-        elif choice is 3:  # Roster
+        elif choice == 3:  # Roster
             option_3()
-        elif choice is 4:  # News
+        elif choice == 4:  # News
             print("No news today. Come back next week.")
-        elif choice is 5:
+        elif choice == 5:
             option_5()
-        elif choice is 6:  # Wait
+        elif choice == 6:  # Wait
             break
         else:
             print("\nError")
@@ -945,7 +945,7 @@ def choose_units(job_choice):
     while True:
         if len(units) < job.maximum_workers:
             for i in System.roster.units:
-                if System.roster.units[i] not in units and System.roster.units[i].level >= job.recommended_level:
+                if System.roster.units[i] not in units and System.roster.units[i].level >= job.recommended_level and System.roster.units[i].current_job == None:
                     print(str(i + 1) + ":")
                     System.roster.units[i].short_description()
 
@@ -953,6 +953,8 @@ def choose_units(job_choice):
             unit_choice = int(input("Which unit do you want to assign to this job? Press 0 to quit.\n"))
             if unit_choice == 0:
                 break
+            elif System.roster.units[unit_choice - 1].current_job != None:
+                pass
             else:
                 unit = System.roster.units[unit_choice - 1]
                 print(unit.name + "'s chances:")
@@ -960,7 +962,7 @@ def choose_units(job_choice):
                 print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
                 confirm = int(input(""))
                 if confirm == 1:
-                    if unit.commander is True:
+                    if unit.commander == True:
                         commander_confirm = int(input(
                             "This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n"))
                         if commander_confirm == 1:
@@ -969,7 +971,7 @@ def choose_units(job_choice):
                         units.append(unit)
         elif 0 < len(units) < job.maximum_workers:
             unit_choice = int(input("Are there any other units you want to assign? Press 0 if not.\n"))
-            if unit_choice == 0:
+            if unit_choice == 0 or System.roster.units[unit_choice - 1].current_job != None:
                 pass
             elif unit_choice > 0 and System.roster.units[unit_choice - 1] not in units:
                 unit = System.roster.units[unit_choice - 1]
@@ -978,7 +980,7 @@ def choose_units(job_choice):
                 print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
                 confirm = int(input(""))
                 if confirm == 1:
-                    if unit.commander is True:
+                    if unit.commander == True:
                         commander_confirm = int(input(
                             "This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n"))
                         if commander_confirm == 1:
@@ -1021,7 +1023,7 @@ def job_start(job_choice, units):
     job.participants = units
     System.jobs_in_progress.append(job)
     for i in units:
-        i.current_job = System.jobs_in_progress[job_choice]
+        i.current_job = job
     System.weekly_jobs.remove(job)
     print("Good to go!")
 
@@ -1058,56 +1060,8 @@ if __name__ == '__main__':
         new_unit = Unit()
         System.roster.add_unit(new_unit)
 
-    while System.roster.units[0].commander is True:
-        date_checker()
-        if System.roster.units[0].current_job is None:
+    while System.roster.units[0].commander == True:
+        weekly_update()
+        if System.roster.units[0].current_job == None:
             activity_board()
         date_update()
-
-#
-# # System.roster.print_all()
-# # for i in range(len(System.roster.units) // 3):
-# #     new_job = Job()
-# #     weekly_jobs.append(new_job)
-# for i in range(len(weekly_jobs)):
-#     print(str(i + 1) + ":")
-#     weekly_jobs[i].long_description()
-# while True:
-#     job_choice = int(input("\nWhat job interests you? Press 0 to quit.\n"))
-#     if job_choice == 0:
-#         break
-#     elif job_choice > len(weekly_jobs):
-#         print("Error")
-#     else:
-#         job_choice -= 1
-#         units = []
-#         while True:
-#             for i in System.roster.units:
-#                 if System.roster.units[i] not in units and System.roster.units[i].level >= weekly_jobs[job_choice].recommended_level:
-#                     print(str(i+1)+":")
-#                     System.roster.units[i].short_description()
-#             if len(units) == 0:
-#                 unit_choice = int(input("Which unit do you want to assign to this job? Press 0 to quit.\n"))
-#                 if unit_choice == 0:
-#                     break
-#                 else:
-#                     unit = System.roster.units[unit_choice-1]
-#                     print(unit.name+"'s chances:")
-#                     weekly_jobs[job_choice].print_chance(unit)
-#                     print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
-#                     confirm = int(input(""))
-#                     if confirm == 1:
-#                         units.append(unit)
-#             # 0: exits if units empty or
-#
-#             if len(units) > 0:
-#                 unit_names = ""
-#                 for i in units:
-#                     unit_names += i.name + ", "
-#                 print("Send:", unit_names[0:-2]+"?")
-#                 confirm = int(input(""))
-#                 if confirm == 1:
-#                     print("Epic")
-#                 else:
-#                     break
-#         break
