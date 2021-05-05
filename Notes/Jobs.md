@@ -18,7 +18,7 @@ Disaster | sustain injury
 
 
 # Busking
-#### Perform for the locals on the street.
+#### Perform for the locals on the street. Low risk, but will not guarantee a reward.
 ##### Type: Free Job 
 ##### Difficulty: ★
 ##### Length: 1 week
@@ -37,7 +37,7 @@ Fail | get level
 
 
 # Guard
-#### Act as a guard for a client. Thwart attacks and serve them well.
+#### Act as a guard for a client. Thwart attacks and serve them well. Be prepared to give your life for your service.
 ##### Type: Normal Job 
 ##### Difficulty: ★★
 ##### Length: 4 weeks
@@ -57,7 +57,7 @@ Fail | death
 
 
 # Gambling
-#### Go to a gambling house with a specified amount of money to use and try your hand at the games.
+#### Go to a gambling house with a specified amount of money to use and try your hand at the games. Return with the amount of money that's left over afterwards.
 ##### Type: Free Job 
 ##### Difficulty: ★★★★★
 ##### Length: 1 week
@@ -163,11 +163,10 @@ Fail | nothing
 
 
 # Theatre
-# Busking
-#### Perform for the locals on the street.
+#### Join an theatre company to help them put on a production.
 ##### Type: Free Job 
-##### Difficulty: ★
-##### Length: 1 week
+##### Difficulty: ★★★
+##### Length: 4 weeks
 #### Relevant stats:
 * Level
 * Allure
