@@ -173,6 +173,7 @@ Fail | nothing
 ##### Length: 4 weeks
 #### Relevant stats:
 * Level
+* Agility
 * Allure
 #### Relevant skills:
 * Passion for Art: increases chance of success
@@ -194,6 +195,7 @@ Fail | nothing
 #### Relevant stats:
 * Level
 * Agility
+* Cunning
 #### Relevant skills:
 * Shinobi Training: increases chance of success
 * Gymnastics: increases chance to excel
