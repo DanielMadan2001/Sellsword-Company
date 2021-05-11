@@ -224,7 +224,7 @@ Disaster | death
 Results | Rewards
 ------------ | -------------
 Perfect | get money, level, intelligence point and cunning point
-Pass | get money and level
+Pass | get money, level and intelligence point
 Fail | get less money, level and intelligence point
 
 
