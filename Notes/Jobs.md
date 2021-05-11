@@ -141,8 +141,7 @@ Results | Rewards
 ------------ | -------------
 Perfect | get money, level, combat point, intelligence point and agility point
 Pass | get money, level and combat point
-Fail | get level and combat point
-Disaster | death
+Fail | get less money, level and combat point
 
 
 # Tactician
