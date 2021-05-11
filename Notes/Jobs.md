@@ -225,8 +225,7 @@ Results | Rewards
 ------------ | -------------
 Perfect | get money, level, intelligence point and cunning point
 Pass | get money and level
-Fail | get level and intelligence point
-Disaster | death
+Fail | get less money, level and intelligence point
 
 
 # War (Working title)
