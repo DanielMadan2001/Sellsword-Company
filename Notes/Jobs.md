@@ -167,7 +167,7 @@ Fail | nothing
 
 # Theatre
 #### Join an theatre company to help them put on a production.
-##### Type: Free Job 
+##### Type: Normal Job 
 ##### Difficulty: ★★★
 ##### Length: 4 weeks
 #### Relevant stats:
