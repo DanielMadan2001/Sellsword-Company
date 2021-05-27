@@ -29,8 +29,8 @@ Awareness         | Job completion  | Guard jobs
 Manners           | Job completion  | Guard jobs
 Hawk Eyes         | Job completion  | Gambling jobs
 Quick Hands       | Job completion  | Gambling jobs
-Soldier Training  | Job completion  | Battle jobs
-Advanced Training | Job completion  | War jobs
+Soldier Training  | Job unlock      | Battle jobs
+Advanced Training | Job unlock      | War jobs
 Glory Seeker      | Job completion  | Battle jobs
 Passion for Art   | Job completion  | Busking and Theatre jobs
 Flair             | Job completion  | Busking and Theatre jobs
