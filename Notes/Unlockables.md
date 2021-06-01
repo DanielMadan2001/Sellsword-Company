@@ -8,7 +8,7 @@ Battle            | Roster size     | Roster size: 10
 Tactician         | Max. stat       | Intelligence 15
 Theatre	          | Max. stat       | Allure 15, Agility 10
 Infiltration      | Max. stat       | Level 15, Agility 15
-Battle Tactician  | Job completion  | Battle and Tactician jobs
+Battle Tactician  | Job completion  | Tactician jobs
 War               | Time            | Date: [TBD] 
 
 ## Stat Training
