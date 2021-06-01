@@ -15,7 +15,7 @@ War               | Time            | Date: [TBD]
 **Type** | **Conditions** | **Details**
 -- | -- | -- 
 Strength      | Job completion      | Labour jobs
-Intelligence  | Job completion      | Tactician jobs
+Intelligence  | Job completion      | Tactician and Battle Tactician jobs
 Agility       | Job completion      | Infiltration jobs
 Cunning       | Job completion      | Gambling jobs
 Allure        | Job completion      | Busking and Theatre jobs
