@@ -8,7 +8,7 @@ class Unit:
 
         self.level = level
         if level == 0:
-            self.level = randint(1, 60)
+            self.level = randint(1, 5)
 
         self.age = age
         if age == 0:
@@ -62,15 +62,27 @@ class Unit:
             "Shinobi Training": False,  # Infiltration - increases chance of success
             "Gymnastics": False,  # Infiltration - increases chance of gaining agility points
 
-            "Anti-Fighter": False,  # Eliminates weakness to Fighters
-            "Anti-Wizard": False,  # Eliminates weakness to Wizards
-            "Anti-Thief": False,  # Eliminates weakness to Thieves
-            "Anti-Knight": False,  # Eliminates weakness to Knights
-            "Anti-Magician": False,  # Eliminates weakness to Magicians
-            "Anti-Archer": False,  # Eliminates weakness to Archers
-            "Anti-Monk": False,  # Eliminates weakness to Monk
+            # matchups
+            "Fighter": False,  # Eliminates weakness to Fighters
+            "Wizard": False,  # Eliminates weakness to Wizards
+            "Thief": False,  # Eliminates weakness to Thieves
+            "Knight": False,  # Eliminates weakness to Knights
+            "Magician": False,  # Eliminates weakness to Magicians
+            "Archer": False,  # Eliminates weakness to Archers
+            "Monk": False,  # Eliminates weakness to Monk
         }
         self.assign_skills(skills)
+
+        self.matchups = {
+        "Fighter": 1, 
+        "Wizard": 1, 
+        "Thief": 1, 
+        "Knight": 1, 
+        "Magician": 1, 
+        "Archer": 1, 
+        "Monk": 1
+        }
+        self.update_matchups()
 
         self.work = {
             "Labour": 0,
@@ -83,7 +95,7 @@ class Unit:
             "Infiltration": 0,
             "Battle Tactician": 0,
             "War": 0
-        }
+        } # job preferences
         self.job_preferences()
 
         self.commander = commander
@@ -148,22 +160,22 @@ class Unit:
     def get_stats(self):
         # CLASS ############################
         if self.job == "Fighter":
-            self.strength, self.allure = 2 * (self.level // 5), 1 * (self.level // 5)
+            self.strength, self.allure = 2, 1
         elif self.job == "Wizard":
-            self.intelligence, self.cunning = 2 * (self.level // 5), 1 * (self.level // 5)
+            self.intelligence, self.cunning = 2, 1
         elif self.job == "Thief":
-            self.agility, self.allure = 2 * (self.level // 5), 1 * (self.level // 5)
+            self.agility, self.allure = 2, 1
         elif self.job == "Knight":
-            self.strength, self.intelligence = 2 * (self.level // 5), 1 * (self.level // 5)
+            self.strength, self.intelligence = 2, 1
         elif self.job == "Magician":
-            self.cunning, self.intelligence, self.allure = 1 * (self.level // 5), 1 * (self.level // 5), 1 * (
+            self.cunning, self.intelligence, self.allure = 1, 1, 1 * (
                     self.level // 5)
         elif self.job == "Archer":
-            self.agility, self.cunning, self.strength = 1 * (self.level // 5), 1 * (self.level // 5), 1 * (
+            self.agility, self.cunning, self.strength = 1, 1, 1 * (
                     self.level // 5)
         else:
-            self.strength, self.intelligence, self.allure = 1 * (self.level // 5), 1 * (self.level // 5), 1 * (
-                    self.level // 5)
+            self.strength, self.intelligence, self.allure = 1, 1, 1
+        
         # PERSONALITY ######################
         if self.personality == "Architect" or self.personality == "Thinker" or self.personality == "Commander" or self.personality == "Debater":
             self.intelligence += 2 * (self.level // 10)
@@ -205,7 +217,7 @@ class Unit:
             total -= 10 * (self.age - 50)
         if self.condition != "Fine":
             total *= 0.25
-        return round(total, 3)
+        return round(total, 2)
 
     def calculate_wage(self):
         return self.level * 5
@@ -244,32 +256,32 @@ class Unit:
             possible_jobs.append("Heavy Lifting")
             possible_jobs.append("Glory Seeker")
             possible_jobs.append("Soldier Training")
-            possible_jobs.append("Anti-Thief")
+            possible_jobs.append("Thief")
         elif self.job == "Wizard":
             possible_jobs.append("History")
             possible_jobs.append("Commanding Voice")
             possible_jobs.append("Passion for Art")
-            possible_jobs.append("Anti-Fighter")
+            possible_jobs.append("Fighter")
         elif self.job == "Thief":
             possible_jobs.append("Gymnastics")
             possible_jobs.append("Hawk Eyes")
             possible_jobs.append("Quick Hands")
-            possible_jobs.append("Anti-Wizard")
+            possible_jobs.append("Wizard")
         elif self.job == "Knight":
             possible_jobs.append("Awareness")
             possible_jobs.append("Manners")
             possible_jobs.append("Soldier Training")
-            possible_jobs.append("Anti-Archer")
+            possible_jobs.append("Archer")
         elif self.job == "Magician":
             possible_jobs.append("Flair")
             possible_jobs.append("Quick Hands")
             possible_jobs.append("Gymnastics")
-            possible_jobs.append("Anti-Knight")
+            possible_jobs.append("Knight")
         elif self.job == "Archer":
             possible_jobs.append("Hawk Eyes")
             possible_jobs.append("Awareness")
             possible_jobs.append("History")
-            possible_jobs.append("Anti-Magician")
+            possible_jobs.append("Magician")
         else:
             possible_jobs.append("Heavy Lifting")
             possible_jobs.append("Manners")
@@ -285,22 +297,22 @@ class Unit:
 
     def job_preferences(self):
         if self.personality == "Architect":
-            self.work["Gambling"], self.work["Tactician"], self.work["Labour"], self.work["Performance"] = 1, 1, -1, -1
+            self.work["Gambling"], self.work["Tactician"], self.work["Labour"], self.work["Busking"], self.work["Theatre"] = 1, 1, -1, -1, 1
         elif self.personality == "Thinker":
-            self.work["Battle"], self.work["Tactician"], self.work["Performance"], self.work["Guard"] = 1, 1, -1, -1
+            self.work["Battle"], self.work["Tactician"], self.work["Busking"], self.work["Theatre"], self.work["Guard"] = 1, 1, 1, -1, -1
         elif self.personality == "Commander":
             self.work["Battle"], self.work["Tactician"], self.work["Gambling"], self.work["Infiltration"] = 1, 1, -1, -1
         elif self.personality == "Debater":
-            self.work["Performance"], self.work["Gambling"], self.work["Labour"], self.work["Guard"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Gambling"], self.work["Labour"], self.work["Guard"] = 1, 1, 1, -1, -1
         elif self.personality == "Advocate":
-            self.work["Performance"], self.work["Guard"], self.work["Battle"], self.work["Infiltration"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Guard"], self.work["Battle"], self.work["Infiltration"] = 1, 1, 1, -1, -1
         elif self.personality == "Mediator":
-            self.work["Performance"], self.work["Guard"], self.work["Battle"], self.work["Tactician"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Guard"], self.work["Battle"], self.work["Tactician"] = 1, 1, 1, -1, -1
         elif self.personality == "Giver":
             self.work["Labour"], self.work["Battle"], self.work["Tactician"], self.work["Infiltration"] = 1, 1, -1, -1
         elif self.personality == "Champion":
-            self.work["Performance"], self.work["Gambling"], self.work["Guard"], self.work[
-                "Infiltration"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Gambling"], self.work["Guard"], self.work[
+                "Infiltration"] = 1, 1, 1, -1, -1
         elif self.personality == "Inspector":
             self.work["Tactician"], self.work["Infiltration"], self.work["Labour"], self.work["Battle"] = 1, 1, -1, -1
         elif self.personality == "Protector":
@@ -310,13 +322,13 @@ class Unit:
         elif self.personality == "Caregiver":
             self.work["Labour"], self.work["Guard"], self.work["Gambling"], self.work["Infiltration"] = 1, 1, -1, -1
         elif self.personality == "Crafter":
-            self.work["Performance"], self.work["Gambling"], self.work["Battle"], self.work["Tactician"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Gambling"], self.work["Battle"], self.work["Tactician"] = 1, 1, 1, -1, -1
         elif self.personality == "Artist":
-            self.work["Performance"], self.work["Battle"], self.work["Labour"], self.work["Guard"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Battle"], self.work["Labour"], self.work["Guard"] = 1, 1, 1, -1, -1
         elif self.personality == "Persuader":
-            self.work["Performance"], self.work["Infiltration"], self.work["Labour"], self.work["Battle"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Infiltration"], self.work["Labour"], self.work["Battle"] = 1, 1, 1, -1, -1
         else:
-            self.work["Performance"], self.work["Battle"], self.work["Guard"], self.work["Tactician"] = 1, 1, -1, -1
+            self.work["Busking"], self.work["Theatre"], self.work["Battle"], self.work["Guard"], self.work["Tactician"] = 1, 1, 1, -1, -1
 
         if self.job == "Fighter":
             self.work["Battle"] += 1
@@ -327,7 +339,8 @@ class Unit:
         elif self.job == "Knight":
             self.work["Guard"] += 1
         elif self.job == "Magician":
-            self.work["Performance"] += 1
+            self.work["Busking"] += 1
+            self.work["Theatre"] += 1
         elif self.job == "Archer":
             self.work["Gambling"] += 1
         else:
@@ -344,10 +357,10 @@ class Unit:
             print(self.condition)
         elif self.current_job != None:
             print("Currently working")
-        print("---------------------------------------------------------------------------------------------")
+        print("--------------------------------------------------------------------------------------------")
 
     def long_description(self):
-        print("=============================================================================================")
+        print("============================================================================================")
         if self.commander:
             print("Name:\t\t\t", self.name, "(Commander)")
         else:
@@ -366,14 +379,14 @@ class Unit:
         print("Worth:\t\t\t", str(self.calculate_worth()) + "$")
         print("Yearly wage:\t", str(self.calculate_wage()) + "$")
         print(
-            "---------------------------------------------------------------------------------------------")
+            "--------------------------------------------------------------------------------------------")
         print("Strength:\t\t", self.strength)
         print("Intelligence:\t", self.intelligence)
         print("Agility:\t\t", self.agility)
         print("Cunning:\t\t", self.cunning)
         print("Allure:\t\t\t", self.allure)
         print(
-            "---------------------------------------------------------------------------------------------")
+            "--------------------------------------------------------------------------------------------")
         temp = 0
         for j in self.skills:
             if self.skills[j] == True:
@@ -382,7 +395,7 @@ class Unit:
         if temp == 0:
             print("No skills...")
         print(
-            "---------------------------------------------------------------------------------------------")
+            "--------------------------------------------------------------------------------------------")
         print("Favourite jobs:")
         for j in self.work:
             if self.work[j] > 0:
@@ -391,4 +404,106 @@ class Unit:
         for j in self.work:
             if self.work[j] < 0:
                 print("", j + ":", self.work[j])
-        print("=============================================================================================")
+        print("============================================================================================")
+
+    def update_matchups(self):
+      skills = ["Fighter", "Wizard", "Thief", "Knight", "Magician", "Archer", "Monk"]
+      upgraded_stats = {
+        1.5: 1.75,
+        1.25: 1.35,
+        1: 1.1,
+        0.75: 0.95,
+        0.5: 0.85
+      }
+      if self.job == "Fighter":
+        self.matchups = {
+          "Fighter": 1, 
+          "Wizard": 0.5, 
+          "Thief": 1.5, 
+          "Knight": 1, 
+          "Magician": 0.75, 
+          "Archer": 1, 
+          "Monk": 1
+        }
+      elif self.job == "Wizard":
+        self.matchups = {
+          "Fighter": 1.5, 
+          "Wizard": 1, 
+          "Thief": 0.5, 
+          "Knight": 1, 
+          "Magician": 1, 
+          "Archer": 0.75, 
+          "Monk": 1
+        }
+      elif self.job == "Thief":
+        self.matchups = {
+          "Fighter": 0.5, 
+          "Wizard": 1.5, 
+          "Thief": 1, 
+          "Knight": 0.75, 
+          "Magician": 1, 
+          "Archer": 1, 
+          "Monk": 1
+        }
+      elif self.job == "Knight":
+        self.matchups = {
+          "Fighter": 1, 
+          "Wizard": 1, 
+          "Thief": 1.25, 
+          "Knight": 1, 
+          "Magician": 0.75, 
+          "Archer": 1.25, 
+          "Monk": 1
+        }
+      elif self.job == "Magician":
+        self.matchups = {
+          "Fighter": 1.25, 
+          "Wizard": 1, 
+          "Thief": 1, 
+          "Knight": 1.25, 
+          "Magician": 1, 
+          "Archer": 0.75, 
+          "Monk": 1
+        }
+      elif self.job == "Archer":
+        self.matchups = {
+          "Fighter": 1, 
+          "Wizard": 1.25, 
+          "Thief": 1, 
+          "Knight": 0.75, 
+          "Magician": 1.25, 
+          "Archer": 1, 
+          "Monk": 1
+        }
+      
+      for i in skills:
+        if self.skills[i] == True:
+          self.matchups[i] = upgraded_stats[self.matchups[i]]
+
+    def matchup_description(self):
+        print("============================================================================================")
+        self.update_matchups()
+        print(self.name, "the", self.job)
+        print("VS. Fighters:\t", str(self.matchups["Fighter"]) + "x")
+        print("VS. Wizards:\t", str(self.matchups["Wizard"]) + "x")
+        print("VS. Thieves:\t", str(self.matchups["Thief"]) + "x")
+        print("VS. Knights:\t", str(self.matchups["Knight"]) + "x")
+        print("VS. Magicians:\t", str(self.matchups["Magician"]) + "x")
+        print("VS. Archers:\t", str(self.matchups["Archer"]) + "x")
+        print("VS. Monks:\t\t", str(self.matchups["Monk"]) + "x")
+
+        # if self.job == "Fighter":
+        #     self.strength, self.allure = 2, 1
+        # elif self.job == "Wizard":
+        #     self.intelligence, self.cunning = 2, 1
+        # elif self.job == "Thief":
+        #     self.agility, self.allure = 2, 1
+        # elif self.job == "Knight":
+        #     self.strength, self.intelligence = 2, 1
+        # elif self.job == "Magician":
+        #     self.cunning, self.intelligence, self.allure = 1, 1, 1 * (
+        #             self.level // 5)
+        # elif self.job == "Archer":
+        #     self.agility, self.cunning, self.strength = 1, 1, 1 * (
+        #             self.level // 5)
+        # else:
