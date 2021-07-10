@@ -51,13 +51,13 @@ class Job:
         "Commanding Voice": False,
         "Shinobi Training": False,
         "Gymnastics": False,
-        "Anti-Fighter": False,
-        "Anti-Wizard": False,
-        "Anti-Thief": False,
-        "Anti-Knight": False,
-        "Anti-Magician": False,
-        "Anti-Archer": False,
-        "Anti-Monk": False
+        "Fighter": False,
+        "Wizard": False,
+        "Thief": False,
+        "Knight": False,
+        "Magician": False,
+        "Archer": False,
+        "Monk": False
       },
       "Injury": False
     }   
@@ -69,7 +69,7 @@ class Job:
     self.offer_dict = {
       "Labour":           ["Strength", "Heavy Lifting"],
       "Guard":            ["Awareness", "Manners"],
-      "Battle":           ["Glory Seeker", "Anti-Fighter", "Anti-Wizard", "Anti-Thief", "Anti-Knight", "Anti-Magician", "Anti-Archer", "Anti-Monk"], 
+      "Battle":           ["Glory Seeker", "Fighter", "Wizard", "Thief", "Knight", "Magician", "Archer", "Monk"], 
       "Tactician":        ["Battle Tactician", "Intelligence", "History", "Commanding Voice"], 
       "Theatre":          ["Allure", "Passion for Art", "Flair"], 
       "Infiltration":     ["Agility", "Shinobi Training", "Gymnastics"], 
@@ -110,13 +110,6 @@ class Job:
         print("\t"+i)
     print("Reward:", str(self.gold) + "$")
     print("--------------------------------------------------------------------------------------------")
-  
-  
-  def min_level_finder(self, min):
-    if 0 < self.min_level < min:
-      self.min_level = min
-    elif self.min_level == 0 or self.min_level > main.System.max_level:
-      self.min_level = randint(min, main.System.max_level)
   
   
   def calculate_chance(self, unit):
@@ -171,7 +164,7 @@ class Job:
 
     if success_chance < 10:
       success_chance = 10
-    elif success_chance == 100:
+    elif success_chance > 95 and (self.type == "Battle" or self.type == "War"):
       success_chance = 95
 
     if injury_chance > 100:
@@ -231,16 +224,18 @@ class Job:
     if min == 0:
       min = self.min_level
     num = (min // 15) + 1
-    print("Min", num)
+    # print(self.type, "min:", num)
     while len(self.enemy_classes) < num:
       random = jobs[randint(0, len(jobs)-1)]
       if random not in self.enemy_classes:
         self.enemy_classes.append(random)
-        offer_enemy = "Anti-" + random
-        self.offer_dict_enemies.append(offer_enemy)
+        self.offer_dict_enemies.append(random)
 
 
   def job_finish(self, System):   # important
+
+    if System.history_open == False:  # can view job history after completing first job
+      System.history_open = True
 
     completion_trigger = False
     names = self.participants_check()
@@ -297,9 +292,9 @@ class Job:
       job_offer = True
 
     self.determine_rewards(result)
-    # if job_offer == True:
-    #   self.find_job_offer(System)
-    self.find_job_offer(System)
+    if job_offer == True:
+      self.find_job_offer(System)
+    # self.find_job_offer(System)
 
     System.money += self.gold
     print("\nRecieved", str(self.gold) + "$")
@@ -377,7 +372,6 @@ class Job:
 
 
   def find_job_history_tally(self, history_entry):
-    print(history_entry)
     job_history_tally = 0
     job_history_tally += history_entry[1] * 5
     job_history_tally += history_entry[0] * 5
@@ -393,6 +387,7 @@ class Job:
   def find_job_offer(self, System, unit=None):
     System.job_history[self.type]["Count"] = 0
     possible_offers = []
+    commander = False
     if unit != None:
       if unit.condition != "Dead" and unit.commander == False:
         possible_offers.append("offer")
@@ -402,6 +397,10 @@ class Job:
           possible_offers.append("offer")
           unit = i
           break
+      if unit == None:
+        unit = self.participants[0]
+        commander = True
+
     # if unit == None:
     #   possible_offers.append(self.participants[randint(0, len(self.participants)-1)])
     # else:
@@ -412,19 +411,28 @@ class Job:
     for j in self.offer_dict_enemies:
       possible_offers.append(j)
     
-    # "Anti-Fighter", "Anti-Wizard", "Anti-Thief", "Anti-Knight", "Anti-Magician", "Anti-Archer", "Anti-Monk"
+    # "-Fighter", "-Wizard", "-Thief", "-Knight", "-Magician", "-Archer", "-Monk"
     
-    print(possible_offers)
-    if len(possible_offers) >= 0:
+    # print(possible_offers)
+    if len(possible_offers) > 0:
       chosen_one = possible_offers[randint(0, len(possible_offers)-1)]      
       System.mailbox.append(message.create_letter(chosen_one, unit, self.type))
+      
+      System.weekly_letter_count += 1
+
+      # if commander == False:
+      #   print("\n" + unit.name, "came back with a letter...")
+      # else:
+      #   print("\nYou got a letter...")
+
     return System
 
     
 class Normal_Job(Job):
-  def __init__(self, type="", min_level=0):
+  def __init__(self, max_level, type="", min_level=0):
 
     super().__init__()
+    self.max_level = max_level
 
     if type == "":
       possible_job_types = main.System.available_job_types
@@ -444,8 +452,8 @@ class Normal_Job(Job):
 
       self.min_level_finder(1)
 
-      self.length = 1 + 1 * (min_level // 5)
-      self.min_workers = 1 + 1 * (min_level // 3)
+      self.length = 1 + 1 * (self.min_level // 5)
+      self.min_workers = 1 + 1 * (self.min_level // 10)
       self.max_workers = self.min_workers * 3 
 
       self.relevant_stats["Strength"] = 3 + (self.min_level // 2) - 1
@@ -564,6 +572,14 @@ class Normal_Job(Job):
       self.max_result = 1
 
       self.determine_enemies()
+
+  
+  def min_level_finder(self, min):
+    # print(self.max_level)
+    if 0 < self.min_level < min:
+      self.min_level = min
+    elif self.min_level == 0 or self.min_level > self.max_level:
+      self.min_level = randint(min, self.max_level)
 
 
   def weekly_update(self):
@@ -985,6 +1001,9 @@ class Free_Job(Job):
   def job_finish(self, System, unit):
     print()
 
+    if System.history_open == False:  # can view job history after completing first job
+      System.history_open = True
+
     System.money += self.participants[unit]["Gold"]
     
     money_achieved = self.participants[unit]["Gold"] - self.participants[unit]["Original money"]
@@ -1030,9 +1049,9 @@ class Free_Job(Job):
       job_offer = True
 
     self.determine_rewards(a, b)
-    # if job_offer == True:
-    #   self.find_job_offer(System, unit)
-    self.find_job_offer(System, unit)
+    if job_offer == True:
+      self.find_job_offer(System, unit)
+    # self.find_job_offer(System, unit)
 
     if unit.condition == "Fine":
       self.give_unit_rewards(a)
@@ -1050,6 +1069,32 @@ class Free_Job(Job):
         System.roster.remove(i)
 
     return System
+
+
+  def short_description(self):
+    print(self.type)
+    print(self.description)
+    if self.length == 1:
+      print("Length: 1 week")
+    else:
+      print("Length:", int(self.length), "weeks")
+    print("Current # of workers:", len(self.participants))
+    print("Important stats:")
+    if self.relevant_stats["Strength"] != 0:
+      print("\tStrength", self.relevant_stats["Strength"])
+    if self.relevant_stats["Intelligence"] != 0:
+      print("\tIntelligence", self.relevant_stats["Intelligence"])
+    if self.relevant_stats["Agility"] != 0:
+      print("\tAgility", self.relevant_stats["Agility"])
+    if self.relevant_stats["Cunning"] != 0:
+      print("\tCunning", self.relevant_stats["Cunning"])
+    if self.relevant_stats["Allure"] != 0:
+      print("\tAllure", self.relevant_stats["Allure"])
+    # if len(self.enemy_classes) > 0:
+    #   print("Enemies:")
+    #   for i in self.enemy_classes:
+    #     print("\t"+i)
+    print("--------------------------------------------------------------------------------------------")
 
 
 class Training(Job):
@@ -1087,7 +1132,8 @@ class Training(Job):
     
     elif skill != "":
       self.cost = 1000
-      self.type = skill.lower() + " training"
+      # self.type = skill.lower() + " training"
+      self.type = skill + " training"
       self.skill = skill
 
     self.determine_instructor_name()
@@ -1122,13 +1168,13 @@ class Training(Job):
       "Commanding Voice": "",
       "Shinobi Training": "",
       "Gymnastics": "",
-      "Anti-Fighter": "",
-      "Anti-Wizard": "",
-      "Anti-Thief": "",
-      "Anti-Knight": "",
-      "Anti-Magician": "",
-      "Anti-Archer": "",
-      "Anti-Monk": ""
+      "Fighter": "",
+      "Wizard": "",
+      "Thief": "",
+      "Knight": "",
+      "Magician": "",
+      "Archer": "",
+      "Monk": ""
     }
     if self.stat != "":
       self.instructor_name = stat_name[self.stat]
