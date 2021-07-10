@@ -220,7 +220,13 @@ class Unit:
         return round(total, 2)
 
     def calculate_wage(self):
-        return self.level * 5
+        total = self.level * 5
+        total += self.strength * 0.75
+        total += self.intelligence * 0.75
+        total += self.agility * 0.75
+        total += self.cunning * 0.75
+        total += self.allure * 1.5
+        return total
 
     def assign_skills(self, skills):
         for i in skills:
@@ -359,7 +365,11 @@ class Unit:
             print("Currently working")
         print("--------------------------------------------------------------------------------------------")
 
-    def long_description(self):
+    def long_description(self, System):
+        all_jobs = System.available_job_types + System.available_free_jobs
+        # for i in System.free_jobs_in_progress:
+        #   all_jobs.append(i.type)
+        print("System jobs:", all_jobs)
         print("============================================================================================")
         if self.commander:
             print("Name:\t\t\t", self.name, "(Commander)")
@@ -370,7 +380,7 @@ class Unit:
         print("Birthday:\t\t", "M" + str(self.birthday[0]) + ", W" + str(self.birthday[1]))
         print("Job:\t\t\t", self.job)
         print("Personality:\t", self.personality)
-        print("Attitude:\t\t", str(self.attitude) + "/10")
+        # print("Attitude:\t\t", str(self.attitude) + "/10")
         if self.current_job != None:
             print("Current job:\t", self.current_job.type, "(weeks left:", str(self.current_job.length) + ")")
         else:
@@ -399,11 +409,19 @@ class Unit:
         print("Favourite jobs:")
         for j in self.work:
             if self.work[j] > 0:
-                print("", j + ":", self.work[j])
+                # print("", j + ":", self.work[j])
+              if j in all_jobs:
+                print("", j)
+              else:
+                print("???", j)
         print("Least favourite jobs:")
         for j in self.work:
             if self.work[j] < 0:
-                print("", j + ":", self.work[j])
+              # print("", j + ":", self.work[j])
+              if j in all_jobs:
+                print("", j)
+              else:
+                print("???", j)
         print("============================================================================================")
 
     def update_matchups(self):
