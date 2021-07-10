@@ -1,9 +1,11 @@
 playerName = ""
 from random import randint
 
+all_training = ["Strength", "Intelligence", "Agility", "Cunning", "Allure", "Adept Student", "Heavy Lifting", "Awareness", "Manners", "Hawk Eyes", "Quick Hands", "Soldier Training", "Advanced Training", "Glory Seeker", "Passion for Art", "Flair", "History", "Commanding Voice", "Shinobi Training", "Gymnastics", "Fighter", "Wizard", "Thief", "Knight", "Magician", "Archer", "Monk"]
+
 class Message:
 
-  def __init__(self, sender, type, heading, contents, formality=0, worker=None, normal_job=None, free_job=None, training=None):
+  def __init__(self, sender, type, heading, contents, formality=0, worker=None, normal_job=None, free_job=None, training=None, commander=False, special_event=0):
     self.sender = sender
     self.type = type.lower()  # mail, job, offer
     self.heading = heading
@@ -19,10 +21,14 @@ class Message:
     self.normal_job = normal_job
     self.free_job = free_job
     self.training = training
+    self.special_event = special_event
 
 
   def determine_formality(self, formality):
     if formality == 0:
+      self.greeting = "Dear"
+      self.closing = "From:"
+    elif formality == 2:
       self.greeting = "Dear"
       self.closing = "From:"
     elif formality == 3:
@@ -40,6 +46,7 @@ class Message:
     print('"'+self.heading+'"')
     print("From:", self.sender)
 
+
   def read_letter(self):
     print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
     print(self.heading, "\n")
@@ -52,7 +59,7 @@ class Message:
     print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 
 
-def create_letter(prompt, unit, job_type):
+def create_letter(prompt, unit, job_type, commander=False):
   sender = ""
   type = ""
   heading = ""
@@ -73,38 +80,38 @@ def create_letter(prompt, unit, job_type):
       formality = 5
     elif job_type == "Guard":
       sender = "Captain Eduard"
-      heading = ""
-      contents = ""
-      formality = 0
+      heading = "I wish to enlist one of your men..."
+      contents = "I was notified that one of your men has recently completed a service as a bodyguard and showed tremendous skill and bravery. These are qualities that I value in my men and would like to offer " + unit.name + " a place in my battalion. Under my watch, they will grow into a seasoned warrior fitting to represent our great nation."
+      formality = 2
     elif job_type == "Battle":
       sender = "General Wilfred"
-      heading = ""
-      contents = ""
+      heading = "I would like to recruit " + unit.name
+      contents = "I heard about the daring exploits of " + unit.name + " and I think they would be an excellent inclusion in the Zahevian army. Should you choose to sell their contract to me, they can spend the rest of his life proudly protecting their country."
       formality = 0
     elif job_type == "Tactician":
       sender = "Sir Alvis"
-      heading = ""
-      contents = ""
+      heading = "Tactician TODO"
+      contents = "TODO"
       formality = 0 
     elif job_type == "Theatre":
       sender = "Mrs. Nimue"
-      heading = ""
-      contents = ""
+      heading = "Theatre TODO"
+      contents = "TODO"
       formality = 0
     elif job_type == "Infiltration":  
       sender = "Ms. Senka"
-      heading = ""
-      contents = ""
+      heading = "Infiltration TODO"
+      contents = "TODO"
       formality = 0
     elif job_type == "Battle Tactician":
       sender = "Sir Alvis"
-      heading = ""
-      contents = ""
+      heading = "Battle Tactician TODO"
+      contents = "TODO"
       formality = 0
     elif job_type == "Busking": 
       sender = "Richard"
-      heading = ""
-      contents = ""
+      heading = "TODO: Busking"
+      contents = "TODO"
       formality = 0
     elif job_type == "Gambling":
       sender = "Renard"
@@ -113,31 +120,67 @@ def create_letter(prompt, unit, job_type):
       formality = 3
     elif job_type == "War": 
       sender = "General Wilfred"
-      heading = ""
-      contents = ""
+      heading = "I'd like to recruit " + unit.name
+      contents = "TODO"
       formality = 0
+  # elif prompt in all_training:
+  #   print("Got", prompt)
+  #   type = "job"
+  #   training = prompt
   elif prompt == "Strength":
     sender = "Hugo"
     type = "job"
     heading = "Strength Training TODO"
     contents = "Send your units to me and I can increase their strength."
+    contents = "TODO"
     formality = 0
     worker = None
     training = prompt
-  # elif prompt == "Intelligence":
-  #   print(2)
-  # elif prompt == "Agility":
-  #   print(3)
-  # elif prompt == "Cunning":
-  #   print(4)
-  # elif prompt == "Allure":
-  #   print(5)
+  elif prompt == "Intelligence":
+    sender = "Wyatt"
+    type = "job"
+    heading = "Intelligence Training TODO"
+    contents = "Send your units to me and I can increase their brain size."
+    contents = "TODO"
+    formality = 0
+    worker = None
+    training = prompt
+  elif prompt == "Agility":
+    sender = "Soma"
+    type = "job"
+    heading = "Agility Training TODO"
+    contents = "Send your units to me and I can increase their speed(?)."
+    contents = "TODO"
+    formality = 0
+    worker = None
+    training = prompt
+  elif prompt == "Cunning":
+    sender = "Flint"
+    type = "job"
+    heading = "Cunning Training TODO"
+    contents = "Send your units to me and I can increase their chances of not going to Heaven."
+    contents = "TODO"
+    formality = 0
+    worker = None
+    training = prompt
+  elif prompt == "Allure":
+    sender = "Isa"
+    type = "job"
+    heading = "Cunning Training TODO"
+    contents = "Send your units to me and I can increase their chances of getting laid."
+    contents = "TODO"
+    formality = 0
+    worker = None
+    training = prompt
   else:
     sender = "Mr. Placeholder"
     type = ""
-    print("Prompt: ", prompt)
-    print("Name: ", unit.name)
+    # print("Prompt: ", prompt)
+    # print("Name: ", unit.name)
     heading = "TODO: " + prompt + " Unit: " + unit.name
+    contents = "TODO"
+    
+
     # heading = "TODO: " + prompt + " Unit: " + unit.name + " Type: " + unit.current_job.type
 
-  return Message(sender, type, heading, contents, formality, worker, normal_job, free_job, training)
+  return Message(sender, type, heading, contents, formality, worker, normal_job, free_job, training, commander)
