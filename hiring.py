@@ -1,8 +1,7 @@
 from random import randint
 from unit import Unit
-from main import System
 
-def hire_list():
+def hire_list(System):
     menu = []
     while len(menu) < 5:
         new_unit = Unit("", randint(1, 15))
@@ -14,8 +13,8 @@ def hire_list():
     return menu
 
 
-def hiring_board():
-    lst = hire_list()
+def hiring_board(System):
+    lst = hire_list(System)
     while True:
         choice = int(input("\nWhich one do you want to hire? Press 0 to exit.\n"))
         if choice > len(lst):
@@ -28,9 +27,7 @@ def hiring_board():
         elif choice == 0:
             return
         elif lst[choice - 1].calculate_worth() > System.money:
-            print("Sorry,",
-                  System.roster[0].name + ". I can't give credit! Come back when you're a little... MMMMMMM... Richer!")
+          print("\nSorry,", System.roster[0].name + ". I can't give credit! Come back when you're a little... MMMMMMM... Richer!")
         else:
             print("Error, try again.")
-    System.money = System.money - lst[choice - 1].calculate_worth()
     return lst[choice - 1]
