@@ -1,5 +1,6 @@
 from random import randint
 from unit import Unit
+from int_checker import int_checker
 
 def hire_list(System):
     menu = []
@@ -16,12 +17,16 @@ def hire_list(System):
 def hiring_board(System):
     lst = hire_list(System)
     while True:
-        choice = int(input("\nWhich one do you want to hire? Press 0 to exit.\n"))
-        if choice > len(lst):
+        choice = input("\nWhich one do you want to hire? Press 0 to exit.\n")
+        choice = int_checker(choice)
+        if choice == "":
+          print("Error, try again.")
+        elif choice > len(lst):
           print("The heck are ye talking about, kid?")
           pass
         elif 0 < choice < len(lst) + 1 and lst[choice - 1].calculate_worth() <= System.money:
-            choice2 = int(input("You want " + lst[choice - 1].name + "? (1 for yes, 0 for no)\n"))
+            choice2 = input("You want " + lst[choice - 1].name + "? (1 for yes, 0 for no)\n")
+            choice2 = int_checker(choice2)
             if choice2 == 1:
                 break
         elif choice == 0:
