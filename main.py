@@ -4,6 +4,7 @@ import job
 import message
 import tests
 import tips
+from int_checker import int_checker
 from news import read_weekly_news
 from random import randint
 from time import sleep
@@ -16,6 +17,7 @@ from time import sleep
     # News reports on the war
       # The previous day's difficulty
       # Foreshadowing the dire turn it will take
+  # War letter (# war letter)
   # Adjust all inputs to be normal instead of int
   # Info sheets (tutorial)
   # Make personalized victory messages
@@ -31,9 +33,9 @@ class System:
   roster = []
 
   job_history = {
-     "Labour": {1: 0, 0: 0, -1: 0, "Count": 0},
-     "Guard": {1: 0, 0: 0, "Count": 0},
-     "Battle": {2: 0, 1: 0, 0: 0, -1: 0, "Count": 0}, 
+    "Labour": {1: 0, 0: 0, -1: 0, "Count": 0},
+    "Guard": {1: 0, 0: 0, "Count": 0},
+    "Battle": {2: 0, 1: 0, 0: 0, -1: 0, "Count": 0}, 
     "Tactician": {1: 0, 0: 0, -1: 0, "Count": 0}, 
     "Theatre": {1: 0, 0: 0, -1: 0, "Count": 0}, 
     "Infiltration": {1: 0, 0: 0, -1: 0, "Count": 0}, 
@@ -93,6 +95,10 @@ class System:
   max_agility = 0
   max_cunning = 0
   max_allure = 0
+
+
+def wait():
+  input("Press anything to continue.\n")
 
 
 def menu_top():
@@ -238,13 +244,17 @@ def weekly_update():
   # print("Max cunning:", System.max_cunning)
   # print("Max allure:", System.max_allure)
 
+  # war letter
+  if System.date == [5, 1, 3]:
+    System.mailbox.append(message.Message("Mr. Placeholder", "mail", "War start placeholder", "", 0, None, None, None, None, False, 2))
+
   if System.weekly_letter_count == 1:
     print("\nYou got a letter!")
   elif System.weekly_letter_count > 1:
     print("\nYou got " + str(System.weekly_letter_count) + " letters!")
   System.weekly_letter_count = 0
 
-  wait = input("Press anything to continue.\n")
+  wait()
 
   birthday_checker()
 
@@ -332,7 +342,8 @@ def activity_board():
     while System.roster[0].current_job == None:
         menu_top()
         print_activity_board_items()
-        choice = int(input())
+        choice = input()
+        choice = int_checker(choice)
         # choice = 1
         print()
         if choice == 1:  # Jobs
@@ -364,7 +375,7 @@ def activity_board():
         elif choice == 0:  # Wait
             break
         else:
-            print("\nError")
+            print("Error")
     print("See you next week")
     sleep(1)
 
@@ -400,7 +411,8 @@ def option_1():
         print(" 3: Training")
       elif len(System.locked_skill_training_types) < 22 or len(System.locked_stat_training_types) < 5:
         print(" (All training opportunities are taken...)")
-      choice = int(input("Pick a type (0 to go back)\n"))
+      choice = input("Pick a type (0 to go back)\n")
+      choice = int_checker(choice)
       # choice = 3
       if choice == 0:
         break
@@ -417,7 +429,7 @@ def option_1():
       print("Nothing to do now, pal...")
       break
 
-  wait = input("\nPress anything to continue.\n")
+  wait()
 
 
 def normal_job_board():
@@ -427,9 +439,12 @@ def normal_job_board():
       for i in range(len(System.weekly_jobs)):
         print(str(i + 1) + ":")
         System.weekly_jobs[i].short_description()
-      job_choice = int(input("\nWhat job interests you? Press 0 to quit.\n"))
+      job_choice = input("\nWhat job interests you? Press 0 to quit.\n")
+      job_choice = int_checker(job_choice)
       if job_choice == 0:
         break
+      elif job_choice == "":
+        print("\nError\n")
       elif job_choice > len(System.weekly_jobs) or job_choice < 0:
         print("Error\n\n")
       else:
@@ -473,9 +488,13 @@ def choose_units(job_choice):
       if available_count == 0:
         print("No more available units...\n")
       elif len(units) == 0:
-        unit_choice = int(input("Which unit do you want to assign to this job? Press 0 to quit.\n"))
+        unit_choice = input("Which unit do you want to assign to this job? Press 0 to quit.\n")
+        unit_choice = int_checker(unit_choice)
         if unit_choice == 0:
           break
+        elif unit_choice == "":
+          print("???\n")
+          pass
         elif unit_choice > len(System.roster):
           pass
         elif System.roster[unit_choice - 1].current_job != None or System.roster[unit_choice - 1].level < job.min_level:
@@ -486,18 +505,22 @@ def choose_units(job_choice):
           print(unit.name + "'s chances:")
           job.print_chance(unit)
           print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
-          confirm = int(input(""))
+          confirm = input()
+          confirm = int_checker(confirm)
           if confirm == 1:
             if unit.commander == True:
-              commander_confirm = int(input(
-                    "This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n"))
+              commander_confirm = input("This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n")
+              commander_confirm = int_checker(commander_confirm)
               if commander_confirm == 1:
                   units.append(unit)
             else:
                 units.append(unit)
       elif 0 < len(units) < job.max_workers:
-        unit_choice = int(input("Are there any other units you want to assign? Press 0 if not.\n"))
-        if unit_choice > len(System.roster):
+        unit_choice = input("Are there any other units you want to assign? Press 0 if not.\n")
+        unit_choice = int_checker(unit_choice)
+        if unit_choice == "":
+          pass
+        elif unit_choice > len(System.roster):
           pass
         elif unit_choice == 0 or System.roster[unit_choice - 1].current_job != None or System.roster[unit_choice - 1].level < job.min_level:
           pass
@@ -507,11 +530,12 @@ def choose_units(job_choice):
           print(unit.name + "'s chances:")
           job.print_chance(unit)
           print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
-          confirm = int(input(""))
+          confirm = input("")
+          confirm = int_checker(confirm)
           if confirm == 1:
             if unit.commander == True:
-              commander_confirm = int(input(
-                    "This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n"))
+              commander_confirm = input("This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n")
+              commander_confirm = int_checker(commander_confirm)
               if commander_confirm == 1:
                 units.append(unit)
             else:
@@ -528,7 +552,8 @@ def choose_units(job_choice):
 
         if len(units) < job.max_workers:
           print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 2 to add more, press 0 to return to the job list)")
-          confirm = int(input(""))
+          confirm = input("")
+          confirm = int_checker(confirm)
           if confirm == 1:
             job_start(job_choice, units)
             break
@@ -539,7 +564,8 @@ def choose_units(job_choice):
             break
         else:
           print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 0 to return to the job list)")
-          confirm = int(input(""))
+          confirm = input("")
+          confirm = int_checker(confirm)
           if confirm == 1:
             job_start(job_choice, units)
             break
@@ -565,9 +591,12 @@ def free_job_board():
       for i in range(len(System.free_jobs_in_progress)):
         print(str(i + 1) + ":")
         System.free_jobs_in_progress[i].short_description()
-      job_choice = int(input("\nWhat job interests you? Press 0 to quit.\n"))
+      job_choice = input("\nWhat job interests you? Press 0 to quit.\n")
+      job_choice = int_checker(job_choice)
       if job_choice == 0:
         return
+      elif job_choice == "":
+        pass
       elif job_choice > len(System.free_jobs_in_progress) or job_choice < 0:
         print("Error\n\n")
       elif System.free_jobs_in_progress[job_choice-1].type == "Gambling" and System.money < 100:
@@ -591,27 +620,35 @@ def choose_units_free(job_choice):
       print(str(j + 1) + ":")
       System.roster[j].short_description()
     
-    unit_choice = int(input("Which unit do you want to assign to this job? Press 0 to quit.\n"))
+    unit_choice = input("Which unit do you want to assign to this job? Press 0 to quit.\n")
+    unit_choice = int_checker(unit_choice)
     if unit_choice == 0:
       return
-    elif unit_choice > len(available_units):
+    elif unit_choice == "":
+      pass
+    elif unit_choice > len(available_units) or unit_choice == "":
       print("\nError\n")
     else:
       unit = System.roster[unit_choice - 1]
       # print(unit.name + "'s chances:")
       job.print_chance(unit)
       print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
-      confirm = int(input(""))
+      confirm = input("")
+      confirm = int_checker(confirm)
       if confirm == 1:
         if unit.commander == True:
-          commander_confirm = int(input("This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes)\n"))
+          commander_confirm = input("This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes)\n")
+          commander_confirm = int_checker(commander_confirm)
           if commander_confirm != 1:
             pass
         money2 = 0
         if job.type == "Gambling":
           while money2 == 0:
-            money = int(input("How much money will you give " + unit.name + "?\n(Minimum: 100, maximum: " + str(System.money) + ")\n"))
-            if 100 <= money <= System.money:
+            money = input("How much money will you give " + unit.name + "?\n(Minimum: 100, maximum: " + str(System.money) + ")\n")
+            money = int_checker(money)
+            if money == "":
+              pass
+            elif 100 <= money <= System.money:
               money2 = money
             else:
               print("Illegal amount.")
@@ -620,7 +657,8 @@ def choose_units_free(job_choice):
         if System.roster[unit_choice-1].commander == True:
           return
         else:
-          another = int(input("Do you want to assign any other workers to this task? (1 for yes)\n"))
+          another = input("Do you want to assign any other workers to this task? (1 for yes)\n")
+          another = int_checker(another)
           if another != 1:
             return
           else:
@@ -655,9 +693,12 @@ def training_board():
     
     while True:
 
-      choice = int(input("Which one? (0 to go back)\n"))
+      choice = input("Which one? (0 to go back)\n")
+      choice = int_checker(choice)
       if choice == 0:
         return
+      elif choice == "":
+        pass
       elif choice < 0 or choice > len(System.training_jobs):
         print("\nError\n") 
       else:
@@ -678,28 +719,35 @@ def choose_units_training(job_choice):
             System.roster[i].short_description()
 
       if len(units) == 0:
-        unit_choice = int(input("Which unit do you want to assign to this job? Press 0 to quit.\n"))
+        unit_choice = input("Which unit do you want to assign to this job? Press 0 to quit.\n")
+        unit_choice = int_checker(unit_choice)
         if unit_choice == 0:
           break
-        elif unit_choice > len(System.roster):
+        elif unit_choice == "":
+          pass
+        elif unit_choice > len(System.roster) or unit_choice == "":
           pass
         elif System.roster[unit_choice - 1].current_job != None:
           pass
         else:
           unit = System.roster[unit_choice - 1]
           print("\nAssign", unit.name, "to this task? (1 for yes, 0 for no)")
-          confirm = int(input(""))
+          confirm = input("")
+          confirm = int_checker(confirm)
           if confirm == 1:
             if unit.commander == True:
-              commander_confirm = int(input(
-                    "This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n"))
+              commander_confirm = input("This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n")
+              commander_confirm = int_checker(commander_confirm)
               if commander_confirm == 1:
                   units.append(unit)
             else:
                 units.append(unit)
       elif 0 < len(units) < job.max_workers:
-        unit_choice = int(input("Are there any other units you want to assign? Press 0 if not.\n"))
-        if unit_choice > len(System.roster):
+        unit_choice = input("Are there any other units you want to assign? Press 0 if not.\n")
+        unit_choice = int_checker(unit_choice)
+        if unit_choice == "":
+          pass
+        elif unit_choice > len(System.roster):
           pass
         elif unit_choice == 0 or System.roster[unit_choice - 1].current_job != None:
           pass
@@ -707,11 +755,12 @@ def choose_units_training(job_choice):
           unit = System.roster[unit_choice - 1]
           print()
           print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
-          confirm = int(input(""))
+          confirm = input("")
+          confirm = int_checker(confirm)
           if confirm == 1:
             if unit.commander == True:
-              commander_confirm = int(input(
-                    "This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n"))
+              commander_confirm = input("This is your commander unit. If you send them to a job, all of your unemployed mercs will not have a job to do.\nAre you sure? (1 for yes, 0 for no)\n")
+              commander_confirm = int_checker(commander_confirm)
               if commander_confirm == 1:
                 units.append(unit)
             else:
@@ -726,7 +775,8 @@ def choose_units_training(job_choice):
 
         if len(units) < job.max_workers:
           print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 2 to add more, press 0 to return to the job list)")
-          confirm = int(input(""))
+          confirm = input("")
+          confirm = int_checker(confirm)
           if confirm == 1:
             training_job_start(job_choice, units)
             break
@@ -736,7 +786,8 @@ def choose_units_training(job_choice):
             break
         else:
           print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 0 to return to the job list)")
-          confirm = int(input(""))
+          confirm = input("")
+          confirm = int_checker(confirm)
           if confirm == 1:
             training_job_start(job_choice, units)
             break
@@ -757,9 +808,14 @@ def training_job_start(index, units):
 def option_3():
     while True:
         print_all()
-        choice = int(input("\nChoose a unit to inspect (unit #) or 0 to go back\n"))
+        choice = input("\nChoose a unit to inspect (unit #) or 0 to go back\n")
+        choice = int_checker(choice)
         if choice == 0:
             break
+        elif choice == "":
+            print("\nError")
+        elif choice > len(System.roster):
+            print("\nWho?")
         else:
             System.roster[choice - 1].long_description(System)
             choice = input("Press anything to go back")
@@ -800,7 +856,7 @@ def option_5():
         print(" -", j.name)
       print("Weeks left:", job.length)
       print()
-    wait = input("Press anything to continue.\n")
+    wait()
   else:
     print("No jobs being done...")
     sleep(2)
@@ -817,9 +873,12 @@ def option_7(): # important ####################################################
         print(str(current) + ":", i)
         current += 1
     while True:
-      choice = int(input("Which one do you want? (0 to go back)\n"))
+      choice = input("Which one do you want? (0 to go back)\n")
+      choice = int_checker(choice)
       if choice == 0:
         return
+      elif choice == "":
+        print("\n???\n")
       elif 0 < choice < current:
         tips.read_tip(choices[choice], System.roster[0].name)
         break
@@ -830,7 +889,7 @@ def option_7(): # important ####################################################
 def option_8():
   print()
   print_job_history()
-  wait = input("\nPress anything to continue.\n")
+  wait()
 
 
 def mailbox():
@@ -850,11 +909,14 @@ def mailbox():
       print()
     second_switch = True
     while second_switch == True:
-      choice = int(input("Choose a letter to read by selecting its corresponding number. Press 0 to go back.\n"))
+      choice = input("Choose a letter to read by selecting its corresponding number. Press 0 to go back.\n")
+      choice = int_checker(choice)
       print()
       if choice == 0:
         second_switch = False
         first_switch = False
+      elif choice == "":
+        pass
       elif choice == (len(System.mailbox) + 1) and read_all_option == True:
         for x in range(len(System.mailbox)):
           read_mail(0)
@@ -865,7 +927,7 @@ def mailbox():
         second_switch = False
     if len(System.mailbox) == 0:
       print("\nOut of letters to read...")
-      wait = input("\nPress anything to continue.\n")
+      wait()
 
 
 def read_mail(index):
@@ -876,9 +938,11 @@ def read_mail(index):
     if letter.special_event == 1 and System.doctor_open == False:
       System.doctor_open = True
       System.tips["Doctor"] = True
-    wait = input("\nPress anything to continue.\n")
+    if letter.special_event == 2: # war letter
+      pass
+    wait()
   elif letter.type == "job":
-    wait = input("\nPress anything to continue.\n")
+    wait()
     normal_check = letter.normal_job in System.locked_job_types
     free_check = letter.free_job in System.locked_free_jobs
     stat_check = letter.training in System.locked_stat_training_types
@@ -918,11 +982,12 @@ def read_mail(index):
     print("Training types:", System.training_jobs)
     print("Locked training types:", System.locked_stat_training_types, System.locked_skill_training_types)
 
-    wait = input("\nPress anything to continue.\n")
+    wait()
     print()
   elif letter.type == "offer":
     while True:
-      choice = int(input("\nSell " + letter.worker.name + " for $" + str(letter.worker_cost) + "?(1 for yes, 0 for no)\n"))
+      choice = input("\nSell " + letter.worker.name + " for $" + str(letter.worker_cost) + "?(1 for yes, 0 for no)\n")
+      choice = int_checker(choice)
       if choice == 1:
         print("Worker is in party:", letter.worker in System.roster)
         if letter.worker not in System.roster:
@@ -950,15 +1015,15 @@ def doctor():
   patients1 = sick_list()
   if len(patients1) == 0:
     print("Don't come in here unless you got some patients that I can help. This place is busy, you know.\n")
-    wait = input("Press anything to continue.\n")
+    wait()
     return
   
   if System.doctor_heals == 0:
     print("This is your first time so I'll treat you for free once. Afterwards, it'll be 500$ per patient...")
-    wait = input("Press anything to continue.\n")
+    wait()
   elif System.money < 500 and System.doctor_heals > 0:
     print("Sorry to say, but you can't afford the treatment fee. Come back when you can pay.\n")
-    wait = input("Press anything to continue.\n")
+    wait()
     return
 
   while True:
@@ -972,7 +1037,7 @@ def doctor():
 
     if len(patients2) == 0:
       print("\nEveryone is ready to go. Come back anytime...")
-      wait = input("Press anything to continue.\n")
+      wait()
       return
 
     print("\nPossible patients:")
@@ -981,14 +1046,18 @@ def doctor():
     if len(patients2) > 1:
       print(str(len(patients2) + 1) + ": Heal everyone")
     # elif choice > len(patients2)
-    choice = int(input("Choose a patient to heal. (0 to go back)\n"))
+    choice = input("Choose a patient to heal. (0 to go back)\n")
+    choice = int_checker(choice)
     if choice == 0:
       return
+    elif choice == "":
+      pass
     elif choice == len(patients2) + 1:
       total_cost = len(patients2) * normal_cost
       if cost == 0:
         total_cost -= normal_cost
-      choice2 = int(input("\nPay " + str(total_cost) + "$ to heal everyone? (1 for yes, 0 for no)\n"))
+      choice2 = input("\nPay " + str(total_cost) + "$ to heal everyone? (1 for yes, 0 for no)\n")
+      choice2 = int_checker(choice2)
       if choice2 == 0:
         pass
       elif choice2 == 1:
@@ -999,7 +1068,8 @@ def doctor():
     elif choice > len(patients2) + 2 or choice < 0:
       print("\nError")
     else:
-      choice2 = int(input("\nPay " + str(cost) + "$ to heal " + patients2[choice-1].name + "? (1 for yes, 0 for no)"))
+      choice2 = input("\nPay " + str(cost) + "$ to heal " + patients2[choice-1].name + "? (1 for yes, 0 for no)")
+      choice2 = int_checker(choice2)
       if choice2 == 0:
         pass
       elif choice2 == 1:
@@ -1075,8 +1145,11 @@ def bankrupcy():
       if i > 0:
         print(str(i) + ":")
         System.roster[i].short_description()
-    choice = int(input("\nWho will you sell?\n"))
-    if 1 <= choice <= len(System.roster) - 1:
+    choice = input("\nWho will you sell?\n")
+    choice = int_checker(choice)
+    if choice == "":
+      pass
+    elif 1 <= choice <= len(System.roster) - 1:
       amount = System.roster[choice].calculate_worth()
       print("You sold " + System.roster[choice].name + " and recieved " + str(amount) + "$.")
       System.money += amount
@@ -1118,7 +1191,7 @@ def test():  # important #######################################################
   # while True:
   #   weekly_update()
   #   menu_top()
-  #   wait = input("Press anything to continue.\n")
+  #   wait()
   #   date_update()
 
   menu_top()
@@ -1240,20 +1313,20 @@ if __name__ == '__main__':
   #     break
   
   unlock_all_jobs()
-  # unlock_all_options()
+  unlock_all_options()
 
   System.roster.append(unit.Unit(playerName, 5, [3, 4], 20, "Fighter", "Commander", ["Adept Student"], True))
   message.playerName = playerName
   System.weekly_jobs.append(job.Normal_Job(System.max_level, "Labour", 1))
 
   System.roster.append(unit.Unit("", 5))
-  System.roster.append(unit.Unit("", 15))
-  System.roster.append(unit.Unit("", 25))
+  # System.roster.append(unit.Unit("", 15))
+  # System.roster.append(unit.Unit("", 25))
   # free_job_start(0, System.roster[1])
   # System.roster.append(unit.Unit("", 5))
   # training_job_start(0, [System.roster[2]])
   
-  # letter_test()
+  letter_test()
   
   while System.roster[0].commander == True:
     # System.roster[0].condition = "Injured"
