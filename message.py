@@ -25,21 +25,30 @@ class Message:
 
 
   def determine_formality(self, formality):
-    if formality == 0:
+    if formality == 0:  # default
       self.greeting = "Dear"
       self.closing = "From:"
-    elif formality == 2:
+    elif formality == 1:  # casual
+      self.greeting = "Hey"
+      self.closing = "Have a good day!"
+    elif formality == 2:  # formal
       self.greeting = "Dear"
       self.closing = "From:"
-    elif formality == 3:
+    elif formality == 3:  # sly
       self.greeting = "Good day to you,"
       self.closing = "Pleasure doing business with you,"
-    elif formality == 4:
+    elif formality == 4:  # shady
       self.greeting = "Mr./Ms."
       self.closing = "Don't keep me waiting."
-    elif formality == 5:
+    elif formality == 5:  # hardy
       self.greeting = "How are you doing,"
       self.closing = "Can't wait to hear back from you!"
+    elif formality == 6:  # sultry
+      self.greeting = "Dearest"
+      self.closing = "Take care!"
+    elif formality == 7:  # posh
+      self.greeting = "Good day,"
+      self.closing = "Sincerely,"
 
       
   def short_description(self):
@@ -87,32 +96,32 @@ def create_letter(prompt, unit, job_type, commander=False):
       sender = "General Wilfred"
       heading = "I would like to recruit " + unit.name
       contents = "I heard about the daring exploits of " + unit.name + " and I think they would be an excellent inclusion in the Zahevian army. Should you choose to sell their contract to me, they can spend the rest of his life proudly protecting their country."
-      formality = 0
+      formality = 2
     elif job_type == "Tactician":
       sender = "Sir Alvis"
-      heading = "Tactician TODO"
-      contents = "TODO"
-      formality = 0 
+      heading = "I'm very impressed"
+      contents = "I have heard some positive reviews about " + unit.name + ", one of your employees. While they are a fine tactician as they are now, they have much yet to learn. If you would let me employ them, I could mold them into a seasoned strategist befitting of the royal council. The choice is yours."
+      formality = 7 
     elif job_type == "Theatre":
       sender = "Mrs. Nimue"
-      heading = "Theatre TODO"
-      contents = "TODO"
+      heading = unit.name + " has potential..."
+      contents = "I was attending a show for pleasure and took a liking to your little " + unit.name + ". I am looking for new talent to add to my gallery and I think they would fit perfectly! I would love to make them a full time member of my theatre company."
       formality = 0
     elif job_type == "Infiltration":  
       sender = "Ms. Senka"
-      heading = "Infiltration TODO"
-      contents = "TODO"
-      formality = 0
+      heading = "I have an offer for you."
+      contents = "I heard through the grapevine that you have some employees who dabble in espianoge and other shady business. As someone familiar with that type of work, I would be happy to have another partner in crime. " + unit.name + " is exactly the type of person I'm talking about and I'd like to buy his freedom."
+      formality = 4
     elif job_type == "Battle Tactician":
       sender = "Sir Alvis"
-      heading = "Battle Tactician TODO"
-      contents = "TODO"
+      heading = "I'm very impressed"
+      contents = "I have heard fantastic tales about " + unit.name + "'s leadership skills in combat and would like to recruit him into my personal circle of military strategists."
       formality = 0
     elif job_type == "Busking": 
       sender = "Richard"
       heading = "TODO: Busking"
       contents = "TODO"
-      formality = 0
+      formality = 1
     elif job_type == "Gambling":
       sender = "Renard"
       heading = "Let's cut a deal"
