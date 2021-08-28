@@ -818,6 +818,7 @@ class Free_Job(Job):
 
     if self.type == "Busking":
       self.length = 1
+      self.description = "Perform on the streets for any passerbys"
 
       self.success_skills.append("Passion for Art")
       self.excel_skills.append("Flair")
@@ -827,6 +828,7 @@ class Free_Job(Job):
 
     elif self.type == "Gambling":
       self.length = 2
+      self.description = "Go to the local gambling house and wage your earnings"
 
       self.success_skills.append("Hawk Eyes")
       self.excel_skills.append("Quick Hands")
@@ -835,6 +837,7 @@ class Free_Job(Job):
       self.max_result = 2
 
     elif self.type == "War":
+      self.description = "Answer the call of duty and fight for your homeland"
       self.length = 12
 
       self.success_skills.append("Soldier Training")
@@ -1105,38 +1108,46 @@ class Training(Job):
     self.stat = stat
     self.skill = skill
     self.instructor_name = ""
+    self.determine_instructor_name()
 
     if stat != "":
       self.cost = 500
       if stat == "Strength":
-        self.type = "strength training"
+        self.type = "Strength training"
+        # self.type = "strength training"
         self.description = "Send units to Hugo and he will help them build some muscle."
         self.unit_rewards["Strength-Up"] = True
 
       elif stat == "Intelligence":
-        self.type = "intelligence training"
-        self.description = "Send units to Wyatt and he will help them expand their minds."
+        self.type = "Intelligence training"
+        # self.type = "intelligence training"
+        self.description = "Send units to Wyatt and he will help them expand their horizons."
         self.unit_rewards["Intelligence-Up"] = True
 
       elif stat == "Agility":
-        self.type = "agility training"
+        self.type = "Agility training"
+        # self.type = "agility training"
+        self.description = "Send units to Soma and he will train their flexibility and acrobatics."
         self.stat = "Agility"
       
       elif stat == "Cunning":
-        self.type = "cunning training"
+        self.type = "Cunning training"
+        # self.type = "cunning training"
+        self.description = "Send units to Flint and he will teach them the ways of deceit."
         self.stat = "Cunning"
       
       elif stat == "Allure":
-        self.type = "allure training"
+        self.type = "Allure training"
+        # self.type = "allure training"
+        self.description = "Send units to Isa and she will teach them to perfect their public image."
         self.stat = "Allure"
     
     elif skill != "":
       self.cost = 1000
+      self.description = "Send units to " + self.instructor_name + " to learn the skill " + self.skill
       # self.type = skill.lower() + " training"
       self.type = skill + " training"
       self.skill = skill
-
-    self.determine_instructor_name()
 
     self.length = 4
     self.min_workers = 1
@@ -1147,34 +1158,34 @@ class Training(Job):
     stat_name = {
       "Strength": "Hugo",
       "Intelligence": "Wyatt",
-      "Agility": "",
-      "Cunning": "",
-      "Allure": ""
+      "Agility": "Soma",
+      "Cunning": "Flint",
+      "Allure": "Isa"
     }
 
     skill_name = {
       "Adept Student": "Jon",
-      "Heavy Lifting": "",
-      "Awareness": "",
-      "Manners": "",
-      "Hawk Eyes": "",
-      "Quick Hands": "",
-      "Soldier Training": "",
-      "Advanced Training": "",
-      "Glory Seeker": "",
-      "Passion for Art": "",
-      "Flair": "Lana",
-      "History": "",
-      "Commanding Voice": "",
-      "Shinobi Training": "",
-      "Gymnastics": "",
-      "Fighter": "",
-      "Wizard": "",
-      "Thief": "",
-      "Knight": "",
-      "Magician": "",
-      "Archer": "",
-      "Monk": ""
+      "Heavy Lifting": "Marshal",
+      "Awareness": "Sir Teddy",
+      "Manners": "Sir Ward",
+      "Hawk Eyes": "Mr. Hawk",
+      "Quick Hands": "Mr. Vulture",
+      "Soldier Training": "Captain Edward",
+      "Advanced Training": "Captain Wilfred",
+      "Glory Seeker": "Buster",
+      "Passion for Art": "Lana",
+      "Flair": "Arthur",
+      "History": "Aldegund",
+      "Commanding Voice": "Meyer",
+      "Shinobi Training": "Ace",
+      "Gymnastics": "Jez",
+      "Fighter": "Zeru",
+      "Wizard": "Aria",
+      "Thief": "Sir Demir",
+      "Knight": "Jove",
+      "Magician": "Fletcher",
+      "Archer": "Captain Wallace",
+      "Monk": "Girisha"
     }
     if self.stat != "":
       self.instructor_name = stat_name[self.stat]
