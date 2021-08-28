@@ -9,27 +9,16 @@ from news import read_weekly_news
 from random import randint
 from time import sleep
 
-#ctrl+k ctrl+1
-# To do list:
-  # All letters
-  # News
-    # Busking difficulty
-    # News reports on the war
-      # The previous day's difficulty
-      # Foreshadowing the dire turn it will take
-  # War letter (# war letter)
-  # Adjust all inputs to be normal instead of int
-  # Info sheets (tutorial)
-  # Make personalized victory messages
-  # Make better descriptions
-  # When in hardcore war phase, increase minimum difficulty for war
-  # Balance economy
-  # Make attitude effect stuff
-
+infiltration_date = [12, 1, 2]
+war_date = [5, 1, 3]
+war_second_phase = [8, 3, 5]
+end_war_date = [8, 1, 7]
 
 class System:
   date = [5, 1, 0]  # month, week, year
-  money = 1000
+  # date = [4, 4, 3]
+  # date = [7, 4, 7]
+  money = 250
   roster = []
 
   job_history = {
@@ -66,6 +55,7 @@ class System:
 
   mailbox = []
 
+  wartime_phase_soldier_counter = False
   wartime_phase_minimum_soldiers = 0
   wartime_phase_current_soldiers = 0
 
@@ -106,7 +96,7 @@ def menu_top():
   print("Date: M" + str(System.date[0]) + ", W" + str(System.date[1]) + ", Y" + str(System.date[2]))
   print("Funds:", str(System.money) + "$")
   print("Available units:", availability_checker(), "/", len(System.roster))
-  if System.wartime_phase_minimum_soldiers > System.wartime_phase_current_soldiers:
+  if System.wartime_phase_soldier_counter and System.wartime_phase_minimum_soldiers > System.wartime_phase_current_soldiers:
     print("Remaining soldiers:", System.wartime_phase_minimum_soldiers - System.wartime_phase_current_soldiers)
   if len(System.mailbox) > 0:
     print("Mailbox:", len(System.mailbox), "message")
@@ -135,6 +125,8 @@ def date_update():
         date[0], date[1] = 1, 1
         date[2] += 1
         check_wartime_phase_soldiers()
+        System.wartime_phase_minimum_soldiers = 10 # first war phase
+        System.wartime_phase_current_soldiers = 0
     for i in range(len(System.roster)):
         if System.roster[i].level > System.max_level:
             System.max_level = System.roster[i].level
@@ -144,6 +136,8 @@ def check_wartime_phase_soldiers():
   if System.wartime_phase_minimum_soldiers > System.wartime_phase_current_soldiers:
     print("You did not enlist enough soldiers into the army and were fined $10,000.")
     System.money -= 10000
+    if System.money <= 0:
+      bankrupcy()
             
 
 def weekly_update():
@@ -170,12 +164,30 @@ def weekly_update():
         else:
           print(System.roster[0].name, "is dead at", System.roster[0].age, "years old.")
         System.roster.remove(System.roster[0])
-      print("\nLiving employees:")
-      for j in System.roster:
-        print("- ", j.name)
+      # print("\nLiving employees:")
+      # for j in System.roster:
+      #   print("- ", j.name)
       # System.jobs_in_progress.remove(i)
     print("--------------------------------------------------------------------------------------------")
   
+  if System.date[2] > 0 or (System.date[2] == 0 and System.date[0] >= 6):
+    System.weekly_busking_difficulty = randint(1, 90)
+  if System.date[2] > war_date[2] or (System.date[2] == war_date[2] and System.date[0] >= war_date[0]):
+    random_num = randint(-10, 30)
+    System.weekly_war_difficulty += random_num
+    # When in hardcore war phase, increase minimum difficulty for war
+    if System.date[2] > war_second_phase[2] or (System.date[2] == war_second_phase[2] and System.date[0] >= war_second_phase[0]):
+      # System.weekly_war_difficulty = randint(30, 90)
+      min_for_weekly_war_difficulty = 30
+    else:
+      # System.weekly_war_difficulty = randint(1, 90)
+      min_for_weekly_war_difficulty = 1
+
+    if System.weekly_war_difficulty < min_for_weekly_war_difficulty:
+      System.weekly_war_difficulty = min_for_weekly_war_difficulty
+    elif System.weekly_war_difficulty > 90:
+      System.weekly_war_difficulty = 90
+
   free_job_total = False
   for i in System.free_jobs_in_progress:
     # print(i.type + ":", len(i.participants))
@@ -191,15 +203,14 @@ def weekly_update():
 
       print("--------------------------------------------------------------------------------------------")
 
-    i.difficulty = randint(1, 90)
     if i.type == "War":
-      System.weekly_war_difficulty = i.difficulty
+      i.difficulty = System.weekly_war_difficulty
     elif i.type == "Busking":
-      System.weekly_busking_difficulty = i.difficulty
+      i.difficulty = System.weekly_busking_difficulty
     i.relevant_stats_update()
   
   for i in System.training_in_progress:
-    i.short_description()
+    # i.short_description()
     print(i.instructor_name + "'s", i.type)
     i = i.weekly_update()
     if i.length == 0:
@@ -211,7 +222,7 @@ def weekly_update():
     if i.length == 0:
       System.jobs_in_progress.remove(i)
   
-  if no_jobs == True and free_job_total == False and len(System.training_in_progress) == 0:
+  if no_jobs == True and free_job_total == False and len(System.training_in_progress) == 0 and System.date != end_war_date:
     print("No jobs were done this week...")
 
   System.weekly_jobs = [job.Normal_Job(System.max_level, "Labour", 1)]
@@ -220,7 +231,7 @@ def weekly_update():
     System.weekly_jobs.append(job.Normal_Job(System.max_level, chosen_type))
 
   if len(sick_list()) > 0 and System.doctor_open == False:
-    System.mailbox.append(message.Message("Dr. Lior", "mail", "Doctor office now open", "TODO", 0, None, None, None, None, False, 1))
+    System.mailbox.append(message.Message("Dr. Lior", "mail", "My clinic is now open", "I heard that you or one of your employees has recently been injured in the line of work. I've got good news for you, my clinic is now open for all who would need it. Just to show you how trustworthy we are, I'll let you heal once for free if you please.", 0, None, None, None, None, False, 1))
     print("You got a letter...")
 
   for i in System.roster:
@@ -244,10 +255,6 @@ def weekly_update():
   # print("Max cunning:", System.max_cunning)
   # print("Max allure:", System.max_allure)
 
-  # war letter
-  if System.date == [5, 1, 3]:
-    System.mailbox.append(message.Message("Mr. Placeholder", "mail", "War start placeholder", "", 0, None, None, None, None, False, 2))
-
   if System.weekly_letter_count == 1:
     print("\nYou got a letter!")
   elif System.weekly_letter_count > 1:
@@ -260,49 +267,94 @@ def weekly_update():
 
 
 def weekly_update_jobs():
-  count = 0
   # Busking
   if System.date == [6, 1, 0]:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Busking Placeholder", "Busking Placeholder", 0, None, None, "Busking"))
+    System.mailbox.append(message.Message("Jon", "job", "So far, so good, huh?", "Looks like you've got your bearings already, I never had a doubt. Remember that not everyone is equipped to fight, so assinging the right people to the right job is crucial to your success. Be smart out there, kid! ", 1, None, None, "Busking"))
     System.weekly_letter_count += 1
   # Guard
   if System.max_level == 10 and "Guard" in System.locked_job_types:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Guard Placeholder", "Guard Placeholder", 0, None, "Guard"))
+    System.mailbox.append(message.Message("Vincent IV", "job", "I have a dangerous task for you...", "I have been invited to a social gathering in the city of Barakas, but I am worried about thieves and assassins who would attack me if I was alone. Therefore, I have put in a job request for anyone willing to act as my bodyguard during the trip. Should you have any employees who could handle such a job, apply at the first opportunity.", 7, None, "Guard"))
     System.weekly_letter_count += 1
   # Gambling
   if System.date == [1, 1, 1]:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Gambling Placeholder", "Gambling Placeholder", 0, None, None, "Gambling"))
+    System.mailbox.append(message.Message("The Gold House", "job", "Good morning, lucky Zehevians!", "Has working been slowly wearing you down? Are you itching to make a living on the path less traveled? If so, come down to The Gold House, where you can make your dreams come true with just a few rolls and bets! At least 100 gold is required for you to play.", 8, None, None, "Gambling"))
     System.weekly_letter_count += 1
   # Battle
   if len(System.roster) >= 10 and "Battle" in System.locked_job_types:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Battle Placeholder", "Battle Placeholder", 0, None, "Battle"))
+    System.mailbox.append(message.Message("Villagers of Brunswell", "job", "Help!", "Our village is in danger! There is a group of bandits who have come to plunder our town every other week and we cannot take much more of it. There should be a listing in your nearest job board soon for this job. Take note that you will be fighting on the front line and anyone could die...", 9, None, "Battle"))
     System.weekly_letter_count += 1
   # Tactician
   if System.max_intelligence >= 15 and "Tactician" in System.locked_job_types:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Tactician Placeholder", "Tactician Placeholder", 0, None, "Tactician"))
+    System.mailbox.append(message.Message("Prof. Kramer", "job", "I have an proposal", "A tactical meeting is taking place in the city of Regalia, with scholars from across the land attending to offer their aid. Your company seems to have some exceptionally bright thinkers who are welcome to attend as well. Your reward is dependent on how useful your representative is to the conversation.", 2, None, "Tactician"))
     System.weekly_letter_count += 1
   # Theatre    Max. stat    Allure 15, Agility 10
   if System.max_allure >= 15 and System.max_agility >= 15 and "Theatre" in System.locked_job_types:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Theatre Placeholder", "Theatre Placeholder", 0, None, "Theatre"))
+    System.mailbox.append(message.Message("P.C.H. Theatre Troupe", "job", "Last minute help wanted!!", "We are a mere week away from performing a recital in the city of Barakas, but one of our extras came down with a fever and will not stop coughing. We could use help from any hired hands that are willing to take such a role. Applications will open soon...", 3, None, "Theatre"))
     System.weekly_letter_count += 1
   # Infiltration    Max. stat    Level 15, Agility 15
-  if System.max_level >= 15 and System.max_agility >= 15 and "Infiltration" in System.locked_job_types:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Guard Placeholder", "Guard Placeholder", 0, None, "Guard"))
+  infiltration_date_checker = System.date[2] > infiltration_date[2] or (System.date[0] >= infiltration_date[0] and System.date[2] == infiltration_date[2])
+  if infiltration_date_checker and System.max_level >= 15 and System.max_agility >= 15 and "Infiltration" in System.locked_job_types:
+    System.mailbox.append(message.Message("Mr. Kode", "job", "For" + System.roster[0].name + "'s eyes only.", "I have a special set of missions that may interest you. I cannot disclose much, but they require high degrees of dexterity and stealth. You will see the listings soon. Send only your best.", 4, None, "Guard"))
     System.weekly_letter_count += 1
   # Battle Tactician    Job completion    Tactician jobs
   rand = (System.job_history["Tactician"][1] * 10) + (System.job_history["Tactician"][0] * 5)
-  if rand >= randint(10, 100) and "Infiltration" in System.locked_job_types:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "Battle Tactician Placeholder", "Battle Tactician Placeholder", 0, None, "Battle Tactician"))
+  if rand >= randint(10, 100) and "Battle Tactician" in System.locked_job_types:
+    System.mailbox.append(message.Message("Prof. Kramer", "job", "Assisance needed", "Villages across the land are being attacked and work is needed to put those lowlife bandits back in their place. Able bodied soldiers are plentiful, but leaders who guide them to victory are not. If you are interested in acting as a battle tactician, watch your job board for new postings. Heed the risks of dying with your troops.", 2, None, "Battle Tactician"))
     System.weekly_letter_count += 1
   # War
-  if System.date == [2, 1, 5]:
-    System.mailbox.append(message.Message("Mr. Placeholder", "job", "War Placeholder", "War Placeholder", 0, None, None, "War"))
+  if System.date == war_date: # war letter
+    System.mailbox.append(message.Message("Royal Zehevian Guard", "job", "Urgent news", "As of today, Zehevia is at war with the Virimal Empire. Battles are happening right now and we need help from mercnary companies from all over the land. \nEach company is expected to send at least 10 combatants a year until the conflict is done. Failure to do so will result in a fine.", 2, None, None, "War", None, False, 2))
     System.weekly_letter_count += 1
+    System.wartime_phase_minimum_soldiers = 10
+    System.weekly_war_difficulty = randint(1, 90)
   
   # Adept Student
   if len(System.roster) >= 5 and "Adept Student" in System.locked_skill_training_types:
-    System.mailbox.append(message.Message("Jon", "job", "Adept Student Placeholder", "Adept Student Placeholder", 0, None, None, None, "Adept Student"))
+    System.mailbox.append(message.create_letter("job", None, "Adept Student"))
     System.weekly_letter_count += 1
+
+  # end war
+  if System.date == end_war_date:
+    System.mailbox.append(message.Message("Jon", "mail", "Great news, kid!", "I don't know if you've seen the news " + System.roster[0].name + ", but the war is over now! I'm glad both of us were able to make it out and now we can continue with business for as long as we'd like. Drop by my place anytime for a drink, on me.", 2, None, None, None, None, False, 3))
+    System.weekly_letter_count += 1
+    end_war()
+
+
+def end_war():  # end_war
+  war_job = None
+  for i in range(len(System.free_jobs_in_progress)):
+    print(System.free_jobs_in_progress[i].type)
+    if System.free_jobs_in_progress[i].type == "War":
+      war_job = System.free_jobs_in_progress[i]
+      war_job_index = i
+  
+  # print("participants:", war_job.participants)
+  if war_job != None:
+    for i in list(war_job.participants):
+      war_job = war_job.weekly_update(i)
+      length = war_job.participants[i]["Length"]
+      if length > 0:
+        print(i.name, "was sent home.")
+      war_job.job_finish(System, i)
+    System.free_jobs_in_progress.remove(war_job)
+
+  # for i in System.free_jobs_in_progress:
+  #   # print(i.type + ":", len(i.participants))
+  #   if len(i.participants) > 0:
+  #     free_job_total = True
+  #     print(i.type + ":", len(i.participants), "worker")
+  #     for j in i.participants:
+  #       i = i.weekly_update(j)
+
+  #     for k in list(i.participants):
+  #       if i.participants[k]["Length"] == 0 or i.participants[k]["Gold"] == 0:
+  #         i.job_finish(System, k)
+
+  #     print("--------------------------------------------------------------------------------------------")
+  
+  System.wartime_phase_soldier_counter = False
+  System.wartime_phase_minimum_soldiers = 0
+    # System.free_jobs_in_progress.remove(System.free_jobs_in_progress[-1])
 
 
 def print_job_history():
@@ -356,12 +408,14 @@ def activity_board():
                 System.money -= new.calculate_worth()
           else:
             print("Your roster is full...")
-            sleep(2)
+            # sleep(2)
+            wait()
         elif choice == 3:  # Roster
             option_3()
         elif choice == 4:  # News
             read_weekly_news(System.date, System.weekly_busking_difficulty, System.weekly_war_difficulty)
-            sleep(1)
+            # sleep(1)
+            # wait()
         elif choice == 5:
             option_5()
         elif choice == 6:
@@ -374,10 +428,25 @@ def activity_board():
             doctor()
         elif choice == 0:  # Wait
             break
+        elif choice == 20210821:
+          skip_choice = input("Skip to:\n 1. Right before war \n 2. Right before hardcore phase \n 3. Right before end of war\n")
+          skip_choice = int_checker(skip_choice)
+          
+          if skip_choice == 1:  # war_date = [5, 1, 3]
+            System.date = [4, 4, 3]
+            System.money = 10000
+          elif skip_choice == 2:  # war_second_phase = [8, 3, 5]
+            System.date = [8, 2, 5]
+            System.money = 10000
+          elif skip_choice == 3:  # end_war_date = [8, 1, 7]
+            System.date = [7, 4, 7]
+            System.money = 10000
+            
         else:
             print("Error")
     print("See you next week")
-    sleep(1)
+    # sleep(1)
+    wait()
 
 
 def print_activity_board_items():
@@ -452,14 +521,17 @@ def normal_job_board():
         FAU = find_appropriate_units(job_choice)
         if len(FAU) < System.weekly_jobs[job_choice].min_workers:
           print("\nYou don't have enough workers who are qualified to do this job...\n")
-          sleep(1)
+          # sleep(1)
+          wait()
         else:
           choose_units(job_choice)
-          sleep(2)
+          # sleep(2)
+          # wait()
           break
     else:
       print("Every job is taken, buddy.")
-      sleep(2)
+      # sleep(2)
+      wait()
       break
 
 
@@ -540,6 +612,8 @@ def choose_units(job_choice):
                 units.append(unit)
             else:
               units.append(unit)
+          elif confirm == 0:
+            pass
           else:
             print("Error")
 
@@ -603,7 +677,8 @@ def free_job_board():
         print("\nNot enough money to go gambling with...\n")
       else:
         choose_units_free(job_choice-1)
-        sleep(2)
+        # sleep(2)
+        # wait()
         break
 
 
@@ -703,7 +778,8 @@ def training_board():
         print("\nError\n") 
       else:
         choose_units_training(choice-1)
-        sleep(2)
+        # sleep(2)
+        wait()
         break
 
 
@@ -859,7 +935,8 @@ def option_5():
     wait()
   else:
     print("No jobs being done...")
-    sleep(2)
+    # sleep(2)
+    wait()
 
 
 def option_7(): # important ############################################################
@@ -896,7 +973,8 @@ def mailbox():
   first_switch = True
   if len(System.mailbox) == 0:
     print("No mail...")
-    sleep(1)
+    # sleep(1)
+    wait()
   while len(System.mailbox) > 0 and first_switch == True:
     for i in range(len(System.mailbox)):
       print(str(i+1) + ":")
@@ -940,6 +1018,11 @@ def read_mail(index):
       System.tips["Doctor"] = True
     if letter.special_event == 2: # war letter
       pass
+    if letter.special_event == 3: # end war
+      print("You have beaten the game. Now you can play in freeplay for as long as you'd like.")
+      # remove units in the war
+      # System.free_jobs_in_progress.remove(System.free_jobs_in_progress[-1])
+    System.mailbox.remove(letter)
     wait()
   elif letter.type == "job":
     wait()
@@ -963,6 +1046,16 @@ def read_mail(index):
       print("********************************************************************************************", "You can now do " + letter.free_job + "!", "\n********************************************************************************************")
       if System.tips["Free job"] == False:
         System.tips["Free job"] = True
+      if letter.free_job == "Busking":
+        # i.difficulty = randint(1, 90)
+        # if i.type == "War":
+        #   System.weekly_war_difficulty = i.difficulty
+        # elif i.type == "Busking":
+        #   System.weekly_busking_difficulty = i.difficulty
+        # i.relevant_stats_update()
+        busking_job = System.free_jobs_in_progress[0]
+      if letter.free_job == "War":
+        System.wartime_phase_soldier_counter = True
     elif letter.training != None:
       if letter.training in System.locked_stat_training_types:
         System.training_jobs.append(job.Training(letter.training, ""))
@@ -973,8 +1066,8 @@ def read_mail(index):
       print("********************************************************************************************", "You can now do " + letter.training + " training!", "\n********************************************************************************************")
       if System.tips["Training"] == False:
         System.tips["Training"] = True
-    for i in System.training_jobs:
-      print(i.type)
+    # for i in System.training_jobs:
+    #   print(i.type)
     print("Normal job types:", System.available_job_types)
     print("Locked normal job types:", System.locked_job_types)
     print("Free job types:", System.available_free_jobs)
@@ -983,30 +1076,31 @@ def read_mail(index):
     print("Locked training types:", System.locked_stat_training_types, System.locked_skill_training_types)
 
     wait()
+    System.mailbox.remove(letter)
     print()
   elif letter.type == "offer":
-    while True:
-      choice = input("\nSell " + letter.worker.name + " for $" + str(letter.worker_cost) + "?(1 for yes, 0 for no)\n")
-      choice = int_checker(choice)
-      if choice == 1:
-        print("Worker is in party:", letter.worker in System.roster)
-        if letter.worker not in System.roster:
-          print("This letter is obsolete...\n")
-          destroy = False
-          break
-        elif letter.worker.current_job != None:
-          print("The subject is busy...\n")
+    if letter.worker not in System.roster:
+      print("This letter is obsolete...\n")
+      wait()
+      System.mailbox.remove(letter)
+    else:
+      while True:
+        choice = input("\nSell " + letter.worker.name + " for $" + str(letter.worker_cost) + "?(1 for yes, 0 for no)\n")
+        choice = int_checker(choice)
+        if choice == 1:
+          if letter.worker.current_job != None:
+            print("The subject is busy...\n")
+            break
+          else:
+            System.money += letter.worker_cost
+            System.roster.remove(letter.worker)
+            System.mailbox.remove(letter)
+            break
+        elif choice == 0:
+          System.mailbox.remove(letter)
           break
         else:
-          System.money += letter.worker_cost
-          System.roster.remove(letter.worker)
-          break
-      elif choice == 0:
-        break
-      else:
-        pass
-  if destroy == True:
-    System.mailbox.remove(letter)
+          pass
 
 
 def doctor():
@@ -1247,22 +1341,106 @@ def unlock_all_options():
 
 
 def letter_test():
-  for i in System.available_job_types:
-    System.mailbox.append(message.create_letter("offer", System.roster[1], i))
-  for i in System.available_free_jobs:
-    System.mailbox.append(message.create_letter("offer", System.roster[1], i))
-  for i in System.training_jobs:
-    System.mailbox.append(message.create_letter(i.type, System.roster[1], i))
+  # for i in System.available_job_types:
+  #   System.mailbox.append(message.create_letter("offer", System.roster[1], i))
+  # for i in System.available_free_jobs:
+  #   System.mailbox.append(message.create_letter("offer", System.roster[1], i))
+  # for i in System.training_jobs:
+  #   print(i.type)
+  #   System.mailbox.append(message.create_letter(i.type, System.roster[1], i))
 
-  tally = 0
-  for i in System.mailbox:
-    if i.contents == "TODO":
-      tally += 1
-  print(tally, "letters left...")
+  # for i in System.locked_job_types:
+  #   System.mailbox.append(message.create_letter("offer", System.roster[1], i))
+  # for i in System.locked_free_jobs:
+  #   System.mailbox.append(message.create_letter("offer", System.roster[1], i))
+  for i in System.locked_stat_training_types:
+    System.mailbox.append(message.create_letter(i + " training", System.roster[1], i))
+  for i in System.locked_skill_training_types:
+    System.mailbox.append(message.create_letter(i + " training", System.roster[1], i))
 
   while True:
+    tally = 0
+    for i in System.mailbox:
+      if i.contents == "TODO":
+        tally += 1
+    print(tally, "letters left...")
+    wait()
     menu_top()
     mailbox()
+
+
+def news_test():
+  week = 1
+  streak = 0
+  index = 0
+
+  return_str = ""
+
+  # infiltration_date = [12, 1, 2]
+  # war_date = [5, 1, 3]
+  # war_second_phase = [8, 3, 5]
+  # end_war_date = [8, 1, 7]
+  phases = [
+    "", 
+    [5, 1, 0], " Phase 1",  
+    [6, 1, 0], " Phase 2",
+    [9, 2, 0], " Phase 3",
+    [1, 1, 1], " Phase 4",
+    [4, 2, 1], " Phase 5",
+    [8, 1, 1], " Phase 6",
+    [11, 1, 1], " Phase 7",
+    [2, 3, 2], " Phase 8",
+    [3, 1, 2], " Phase 9",
+    [5, 4, 2], " Phase 10",
+    [9, 1, 2], " Phase 11",
+    [12, 3, 2], " Phase 12",
+    [3, 4, 3], " Phase 13",
+    [5, 1, 3], " Phase 14",
+    [7, 1, 3], " Phase 15",
+    [10, 4, 3], " Phase 16",
+    [1, 4, 4], " Phase 17",
+    [5, 3, 4], " Phase 18",
+    [8, 4, 4], " Phase 19",
+    [12, 1, 4], " Phase 20",
+    [3, 1, 5], " Phase 21",
+    [6, 2, 5], " Phase 22",
+    [8, 4, 5], " Phase 23",
+    [11, 1, 5], " Phase 24",
+    [2, 2, 6], " Phase 25",
+    [4, 4, 6], " Phase 26",
+    [8, 2, 6], " Phase 27",
+    [11, 3, 6], " Phase 28",
+    [2, 3, 7], " Phase 29",
+    [5, 1, 7], " Phase 29",
+    [8, 1, 7], " Phase 30",
+    None
+  ]
+
+  while True:
+    print("WEEK", week)
+    print("DATE: M" + str(System.date[0]) + ", W" + str(System.date[1]) + ", Y" + str(System.date[2]))
+
+    if phases[index + 1] == System.date:
+      if streak > 0:
+        return_str += str(phases[index]) + "\tStreak: " + str(streak) + "\n"
+      streak = 1
+      index += 2
+    else:
+      week += 1
+    
+    print("STREAK:", streak)
+    print(phases[index])
+    
+    streak += 1
+    if streak > 16:
+      return_str += str(phases[index]) + "\tStreak: " + str(streak) + "\n"
+      break
+    date_update()
+    
+    print()
+    # sleep(0.1)
+
+  print("\n\n" + return_str)
 
 
 if __name__ == '__main__':
@@ -1308,25 +1486,28 @@ if __name__ == '__main__':
   #   playerName = playerName[0:10]
   #   if playerName == "":
   #     playerName = "Harold"
-  #   confirm = int(input("\nAre you OK with " + playerName + "? (1 for yes, anything else for no)\n"))
+  #   confirm = input("\nAre you OK with " + playerName + "? (1 for yes, anything else for no)\n")
+  #   confirm = int_checker(confirm)
   #   if confirm == 1:
   #     break
   
-  unlock_all_jobs()
-  unlock_all_options()
+  # unlock_all_jobs()
+  # unlock_all_options()
 
   System.roster.append(unit.Unit(playerName, 5, [3, 4], 20, "Fighter", "Commander", ["Adept Student"], True))
+
   message.playerName = playerName
   System.weekly_jobs.append(job.Normal_Job(System.max_level, "Labour", 1))
 
-  System.roster.append(unit.Unit("", 5))
+  # System.roster.append(unit.Unit("", 5))
   # System.roster.append(unit.Unit("", 15))
   # System.roster.append(unit.Unit("", 25))
   # free_job_start(0, System.roster[1])
   # System.roster.append(unit.Unit("", 5))
   # training_job_start(0, [System.roster[2]])
   
-  letter_test()
+  # letter_test()
+  # news_test()
   
   while System.roster[0].commander == True:
     # System.roster[0].condition = "Injured"
@@ -1335,4 +1516,6 @@ if __name__ == '__main__':
       if System.money < 0:
         bankrupcy()
     weekly_update()
+    if len(System.roster) == 0:
+      break
   print("GAME OVER")
