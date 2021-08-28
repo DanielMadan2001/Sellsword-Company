@@ -17,7 +17,8 @@ def hire_list(System):
 def hiring_board(System):
     lst = hire_list(System)
     while True:
-        choice = input("\nWhich one do you want to hire? Press 0 to exit.\n")
+        print("\nBudget:", str(System.money) + "$")
+        choice = input("Which one do you want to hire? Press 0 to exit.\n")
         choice = int_checker(choice)
         if choice == "":
           print("Error, try again.")
