@@ -369,7 +369,7 @@ class Unit:
         all_jobs = System.available_job_types + System.available_free_jobs
         # for i in System.free_jobs_in_progress:
         #   all_jobs.append(i.type)
-        print("System jobs:", all_jobs)
+        # print("System jobs:", all_jobs)
         print("============================================================================================")
         if self.commander:
             print("Name:\t\t\t", self.name, "(Commander)")
@@ -413,7 +413,7 @@ class Unit:
               if j in all_jobs:
                 print("", j)
               else:
-                print("???", j)
+                print(" ???")
         print("Least favourite jobs:")
         for j in self.work:
             if self.work[j] < 0:
@@ -421,7 +421,7 @@ class Unit:
               if j in all_jobs:
                 print("", j)
               else:
-                print("???", j)
+                print(" ???")
         print("============================================================================================")
 
     def update_matchups(self):
