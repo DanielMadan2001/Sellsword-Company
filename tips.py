@@ -107,8 +107,10 @@ def skills_prompt():
 
 def free_job_prompt():
   print("\n* * * * * * * * * * * * * * * * * * * * * FREE JOB * * * * * * * * * * * * * * * * * * * * *\n")
-  
+  print(" Jobs classified as 'free jobs' work different than other jobs and training. It can be attempted by an unlimited number of workers and they all work independantly from each other. Once they have completed all of their weeks, they will return while anyone who hasn't will keep working.")
+  print("\n These types of jobs typically carry little risk and can grant great rewards, but only extremely skilled (or lucky) workers will be able to make the most out of their time. Keeping up to date with the news will inform you what the expected forecast of work during the week will be.")
 
 
 def training_prompt():
   print("\n* * * * * * * * * * * * * * * * * * * * * TRAINING * * * * * * * * * * * * * * * * * * * * * \n")
+  print(" Send 1-4 of your units to boost their abilities at a training job. These jobs require an upfront fee to participate in and will typically last 4 weeks. The training will either improve a unit's stats or teach them a new skill. Be warned, sometimes your units will fail to learn anything...")
