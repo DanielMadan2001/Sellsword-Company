@@ -1480,16 +1480,24 @@ if __name__ == '__main__':
 ####################################### GAME #######################################
 ####################################################################################
   
-  playerName = "Daniel"
-  # while True:
-  #   playerName = input("What's your name?\n(Character limit: 10 or input nothing for default name)\n")
-  #   playerName = playerName[0:10]
-  #   if playerName == "":
-  #     playerName = "Harold"
-  #   confirm = input("\nAre you OK with " + playerName + "? (1 for yes, anything else for no)\n")
-  #   confirm = int_checker(confirm)
-  #   if confirm == 1:
-  #     break
+  # start
+  print("===========================================================================================")
+  print("-------------------------------------------------------------------------------------------")
+  print("                                    SELLSWORD COMPANY")
+  print("                                 Made by DanielMadan2001")
+  print("-------------------------------------------------------------------------------------------")
+  print("===========================================================================================")
+  wait()
+
+  while True:
+    playerName = input("What's your name?\n(Character limit: 10 or input nothing for default name)\n")
+    playerName = playerName[0:10]
+    if playerName == "":
+      playerName = "Harold"
+    confirm = input("\nAre you OK with " + playerName + "? (1 for yes, anything else for no)\n")
+    confirm = int_checker(confirm)
+    if confirm == 1:
+      break
   
   # unlock_all_jobs()
   # unlock_all_options()
