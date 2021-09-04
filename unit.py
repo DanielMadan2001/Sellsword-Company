@@ -387,7 +387,7 @@ class Unit:
             print("Current job:\t Awaiting work")
         print("Condition:\t\t", self.condition)
         print("Worth:\t\t\t", str(self.calculate_worth()) + "$")
-        print("Yearly wage:\t", str(self.calculate_wage()) + "$")
+        print("Monthly wage:\t", str(self.calculate_wage()) + "$")
         print(
             "--------------------------------------------------------------------------------------------")
         print("Strength:\t\t", self.strength)

@@ -92,15 +92,17 @@ def wait():
 
 
 def menu_top():
-  print("\n========================")
+  print("\n===========================")
   print("Date: M" + str(System.date[0]) + ", W" + str(System.date[1]) + ", Y" + str(System.date[2]))
   print("Funds:", str(System.money) + "$")
   print("Available units:", availability_checker(), "/", len(System.roster))
+  if System.date[1] == 3 or System.date[1] == 4:
+    print("Monthly wage to pay:", str(wages_for_employees()) + "$")
   if System.wartime_phase_soldier_counter and System.wartime_phase_minimum_soldiers > System.wartime_phase_current_soldiers:
     print("Remaining soldiers:", System.wartime_phase_minimum_soldiers - System.wartime_phase_current_soldiers)
   if len(System.mailbox) > 0:
     print("Mailbox:", len(System.mailbox), "message")
-  print("========================\n")
+  print("===========================\n")
 
 
 def availability_checker():
@@ -111,14 +113,18 @@ def availability_checker():
   return count
 
 
+def wages_for_employees():
+  total = 0
+  for i in range(len(System.roster)):
+    total += System.roster[i].calculate_wage()
+  return total
+
+
 def date_update():
     date = System.date
     date[1] += 1
     if date[1] > 4:  # new month
-        wages_for_employees = 0
-        for i in range(len(System.roster)):
-            wages_for_employees += System.roster[i].calculate_wage()
-        System.money -= wages_for_employees
+        System.money -= wages_for_employees()
         date[1] = 1
         date[0] += 1
     if date[0] > 12:  # new year
@@ -387,7 +393,7 @@ def print_job_history():
     else:
       print("???")
   if System.doctor_open == True:
-    print("\nDoctor Heals (Working Title):", System.doctor_heals)
+    print("\nDoctor uses:", System.doctor_heals)
 
 
 def activity_board():
@@ -441,11 +447,18 @@ def activity_board():
           elif skip_choice == 3:  # end_war_date = [8, 1, 7]
             System.date = [7, 4, 7]
             System.money = 10000
-            
+        elif choice == 20210901:
+            question = input("Are you sure you want to max out the Counts of all jobs? (1 for yes)\n")
+            question = int_checker(question)
+            if question == 1:
+              System.history_open = True
+              for i in System.job_history:
+                System.job_history[i]["Count"] = 90
+            print_job_history()
         else:
             print("Error")
     print("See you next week")
-    # sleep(1)
+    sleep(1)
     wait()
 
 
@@ -574,7 +587,7 @@ def choose_units(job_choice):
         else:
           unit = System.roster[unit_choice - 1]
           print()
-          print(unit.name + "'s chances:")
+          # print(unit.name + "'s chances:")
           job.print_chance(unit)
           print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
           confirm = input()
@@ -599,7 +612,7 @@ def choose_units(job_choice):
         elif unit_choice > 0 and System.roster[unit_choice - 1] not in units:
           unit = System.roster[unit_choice - 1]
           print()
-          print(unit.name + "'s chances:")
+          # print(unit.name + "'s chances:")
           job.print_chance(unit)
           print("Assign", unit.name, "to this task? (1 for yes, 0 for no)")
           confirm = input("")
@@ -618,6 +631,7 @@ def choose_units(job_choice):
             print("Error")
 
       if len(units) >= job.min_workers:
+        print()
         unit_names = ""
         for i in units:
           unit_names += i.name + ", "
@@ -625,7 +639,7 @@ def choose_units(job_choice):
           job.print_group_chance(units)
 
         if len(units) < job.max_workers:
-          print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 2 to add more, press 0 to return to the job list)")
+          print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 2 to add more, press 0 to return to the job list)\n")
           confirm = input("")
           confirm = int_checker(confirm)
           if confirm == 1:
@@ -637,7 +651,7 @@ def choose_units(job_choice):
           elif confirm == 0:
             break
         else:
-          print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 0 to return to the job list)")
+          print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 0 to return to the job list)\n")
           confirm = input("")
           confirm = int_checker(confirm)
           if confirm == 1:
@@ -861,7 +875,7 @@ def choose_units_training(job_choice):
           elif confirm == 0:
             break
         else:
-          print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 0 to return to the job list)")
+          print("Send:", unit_names[0:-2] + "? (Press 1 to confirm, press 0 to return to the job list)\n")
           confirm = input("")
           confirm = int_checker(confirm)
           if confirm == 1:
@@ -998,6 +1012,7 @@ def mailbox():
       elif choice == (len(System.mailbox) + 1) and read_all_option == True:
         for x in range(len(System.mailbox)):
           read_mail(0)
+        second_switch = False
       elif choice > len(System.mailbox) or choice < 0:
         pass
       else:
@@ -1036,14 +1051,14 @@ def read_mail(index):
     elif letter.normal_job != None:
       System.available_job_types.append(letter.normal_job)
       System.locked_job_types.remove(letter.normal_job)
-      print      ("********************************************************************************************", "You can now do " + letter.normal_job + " jobs!", "\n********************************************************************************************")
+      print      ("********************************************************************************************", "You can now do " + letter.normal_job + " jobs!", "\n********************************************************************************************\n")
     elif letter.free_job != None:
-      print(letter.free_job in System.locked_free_jobs)
-      print(System.locked_free_jobs)
+      # print(letter.free_job in System.locked_free_jobs)
+      # print(System.locked_free_jobs)
       System.available_free_jobs.append(letter.free_job)
       System.locked_free_jobs.remove(letter.free_job)
       System.free_jobs_in_progress.append(job.Free_Job(letter.free_job))
-      print("********************************************************************************************", "You can now do " + letter.free_job + "!", "\n********************************************************************************************")
+      print("********************************************************************************************", "You can now do " + letter.free_job + "!", "\n********************************************************************************************\n")
       if System.tips["Free job"] == False:
         System.tips["Free job"] = True
       if letter.free_job == "Busking":
@@ -1063,17 +1078,17 @@ def read_mail(index):
       elif letter.training in System.locked_skill_training_types:
         System.training_jobs.append(job.Training("", letter.training))
         System.locked_skill_training_types.remove(letter.training)
-      print("********************************************************************************************", "You can now do " + letter.training + " training!", "\n********************************************************************************************")
+      print("********************************************************************************************", "You can now do " + letter.training + " training!", "\n********************************************************************************************\n")
       if System.tips["Training"] == False:
         System.tips["Training"] = True
     # for i in System.training_jobs:
     #   print(i.type)
-    print("Normal job types:", System.available_job_types)
-    print("Locked normal job types:", System.locked_job_types)
-    print("Free job types:", System.available_free_jobs)
-    print("Locked free job types:", System.locked_free_jobs)
-    print("Training types:", System.training_jobs)
-    print("Locked training types:", System.locked_stat_training_types, System.locked_skill_training_types)
+    # print("Normal job types:", System.available_job_types)
+    # print("Locked normal job types:", System.locked_job_types)
+    # print("Free job types:", System.available_free_jobs)
+    # print("Locked free job types:", System.locked_free_jobs)
+    # print("Training types:", System.training_jobs)
+    # print("Locked training types:", System.locked_stat_training_types, System.locked_skill_training_types)
 
     wait()
     System.mailbox.remove(letter)
@@ -1162,7 +1177,7 @@ def doctor():
     elif choice > len(patients2) + 2 or choice < 0:
       print("\nError")
     else:
-      choice2 = input("\nPay " + str(cost) + "$ to heal " + patients2[choice-1].name + "? (1 for yes, 0 for no)")
+      choice2 = input("\nPay " + str(cost) + "$ to heal " + patients2[choice-1].name + "? (1 for yes, 0 for no)\n")
       choice2 = int_checker(choice2)
       if choice2 == 0:
         pass
@@ -1489,6 +1504,8 @@ if __name__ == '__main__':
   print("===========================================================================================")
   wait()
 
+  # playerName = "Daniel"
+
   while True:
     playerName = input("What's your name?\n(Character limit: 10 or input nothing for default name)\n")
     playerName = playerName[0:10]
@@ -1498,6 +1515,8 @@ if __name__ == '__main__':
     confirm = int_checker(confirm)
     if confirm == 1:
       break
+  print("\nGood luck,", playerName + "!")
+  wait()
   
   # unlock_all_jobs()
   # unlock_all_options()

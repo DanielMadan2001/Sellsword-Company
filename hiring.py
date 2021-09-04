@@ -9,13 +9,17 @@ def hire_list(System):
         if new_unit.worth < System.money * 0.85:
             menu.append(new_unit)
     for i in range(len(menu)):
-        print(str(i + 1) + ":")
-        menu[i].short_description()
+        print(str(i + 1) + ": " + menu[i].name + ", Level " + str(menu[i].level) + " " + menu[i].job)
+        print(str(menu[i].age) + " years old")
+        print("Cost:", str(menu[i].calculate_worth()) + "$\n")
     return menu
 
 
 def hiring_board(System):
+    print("HIRING BOARD OPTIONS:\n")
+    print("-----------------------------------------------------------")
     lst = hire_list(System)
+    print("-----------------------------------------------------------")
     while True:
         print("\nBudget:", str(System.money) + "$")
         choice = input("Which one do you want to hire? Press 0 to exit.\n")

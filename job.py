@@ -407,13 +407,12 @@ class Job:
     #   possible_offers.append(unit)
     for i in self.offer_dict[self.type]:
       if i in System.locked_job_types or i in System.locked_free_jobs or i in System.locked_stat_training_types or i in System.locked_skill_training_types:
-        possible_offers.append(i)
+        possible_offers.append(i + " training")
     for j in self.offer_dict_enemies:
       possible_offers.append(j)
     
     # "-Fighter", "-Wizard", "-Thief", "-Knight", "-Magician", "-Archer", "-Monk"
     
-    # print(possible_offers)
     if len(possible_offers) > 0:
       chosen_one = possible_offers[randint(0, len(possible_offers)-1)]      
       System.mailbox.append(message.create_letter(chosen_one, unit, self.type))
@@ -1047,7 +1046,7 @@ class Free_Job(Job):
     System.job_history[self.type]["Count"] = self.find_job_history_tally(System.job_history[self.type])
     roll = randint(0, 100)
     job_offer = False
-    print(System.job_history[self.type]["Count"], roll)
+    # print(System.job_history[self.type]["Count"], roll)
     if System.job_history[self.type]["Count"] >= roll:
       job_offer = True
 
