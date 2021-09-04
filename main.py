@@ -821,6 +821,9 @@ def choose_units_training(job_choice):
           pass
         else:
           unit = System.roster[unit_choice - 1]
+          if job.skill != None and unit.skills[job.skill]:
+            print()
+            print(unit.name + " already has this skill...")
           print("\nAssign", unit.name, "to this task? (1 for yes, 0 for no)")
           confirm = input("")
           confirm = int_checker(confirm)
@@ -1518,8 +1521,8 @@ if __name__ == '__main__':
   print("\nGood luck,", playerName + "!")
   wait()
   
-  # unlock_all_jobs()
-  # unlock_all_options()
+  unlock_all_jobs()
+  unlock_all_options()
 
   System.roster.append(unit.Unit(playerName, 5, [3, 4], 20, "Fighter", "Commander", ["Adept Student"], True))
 
