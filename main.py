@@ -60,6 +60,7 @@ class System:
   wartime_phase_current_soldiers = 0
 
   tips = {
+    "The Basics": True,
     "Job start": True, # explains how to sign up for a job and how commanding units work
     "Classes": True,   # class roles & preferences
     "Stats": True,
@@ -89,6 +90,11 @@ class System:
 
 def wait():
   input("Press anything to continue.\n")
+
+
+def first_time_prompt(playerName):
+  tips.read_tip("The Basics", playerName)
+  input("")
 
 
 def menu_top():
@@ -1518,6 +1524,19 @@ if __name__ == '__main__':
     confirm = int_checker(confirm)
     if confirm == 1:
       break
+    else:
+      print()
+  
+  while True:
+    print()
+    choice = input(playerName + ", is this your first time playing? (1 for yes, anything else for no)\n")
+    choice = int_checker(choice)
+    if choice == 1:
+      first_time_prompt(playerName)
+      break
+    else:
+      break
+
   print("\nGood luck,", playerName + "!")
   wait()
   

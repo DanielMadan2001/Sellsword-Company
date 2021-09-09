@@ -1,5 +1,7 @@
 
 def read_tip(prompt, playerName):
+  if prompt == "The Basics":
+    basics_prompt()
   if prompt == "Job start":
     job_start_prompt()
   elif prompt == "Classes":
@@ -16,6 +18,23 @@ def read_tip(prompt, playerName):
     training_prompt()
   print("\n* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *")
   wait = input("\nPress anything to continue.\n")
+
+
+def basics_prompt():
+  print("\n* * * * * * * * * * * * * * * * * * * * * THE BASICS  * * * * * * * * * * * * * * * * * * * *\n")
+  print(" Welcome to Sellsword Company! This is a strategy game where you run a mercenary agency and earn money through missions, all while unlocking the potential in your employees.\n")
+  print(" Every week you have several options of what to do.\n")
+  print(" \tJob board: Look at all of the jobs you could do during the week to earn money.\n")
+  print(" \tHire: Add a new employee to your ranks.\n")
+  print(" \tRoster: See your employees’ profiles and statistics.\n")
+  print(" \tNews: Read the news for the scoop about what is going on in the world.\n")
+  print(" \tCurrent jobs being done: Check what jobs are being done and which employees are working in them.\n")
+  print(" \tMailbox: Read any mail you have received during the previous weeks.\n")
+  print(" At the end of every month, you are required to pay the combined monthly wages of all your employees. The total will be displayed on the third and fourth weeks of every month.\n")
+  print(" The game will end if any of the following conditions are met:\n")
+  print(" \t1. The commander unit (you) dies during a job.\n")
+  print(" \t2. You enter a state of bankruptcy and are incapable of paying the outstanding debt.\n")
+  print("More tips will be available for your review.")
 
 
 def job_start_prompt():
